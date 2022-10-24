@@ -2,21 +2,32 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Controls the creation of a mesh terrain and allows basic alterations (i.e. layer colouring).
+/// Created by: Kane Adams
+/// </summary>
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class MeshTerrainGenerator : MonoBehaviour {
-	private LehmerPRNG PRNG;
-
 	private Mesh mesh;
 	private MeshFilter meshFilter;
 
+	[Header("Mesh dimensions")]
 	[SerializeField] private int xSize;
 	[SerializeField] private int zSize;
 
+	[Space(10)]
 	[SerializeField] private float xOffset;
 	[SerializeField] private float zOffset;
+	[SerializeField] private bool useRandomOffsets;
 
 	private Vector3[] vertices;
 	private int[] triangles;
+
+	[Header("Terrain Shading")]
+	[SerializeField] private Color snowColour = Color.white;
+	[SerializeField] private Color rockColour = Color.grey;
+	[SerializeField] private Color grassColour = new Color(0, 0.25f, 0.1f); // Dark Green
+	[SerializeField] private Color seaColour = new Color(0, 0, 0.4f);       // Blue
 
 	private Color[] colours;
 
@@ -29,33 +40,38 @@ public class MeshTerrainGenerator : MonoBehaviour {
 		mesh = new Mesh();
 		meshFilter.mesh = mesh;
 
-		PRNG = new LehmerPRNG();
-
-		xOffset = PRNG.GenerateNumber(10000);
-		zOffset = PRNG.GenerateNumber(10000);
+		xOffset = Random.Range(0, 10000f);
+		zOffset = Random.Range(0, 10000f);
 
 		CreateMeshShape();
-		UpdateMesh();
+		//UpdateMesh();
+
+		InvokeRepeating(nameof(CreateMeshShape), 5f, 5f);
 	}
 
 	// Update is called once per frame
 	void Update() {
 		if (Input.GetMouseButtonDown(0)) {
-			xOffset = Random.Range(0, 10000f); //PRNG.GenerateNumber(10000);
-			zOffset = Random.Range(0, 10000f); //PRNG.GenerateNumber(10000);
-
 			CreateMeshShape();
-			UpdateMesh();
+			//UpdateMesh();
 		}
+
+		if (useRandomOffsets) {
+			xOffset = Random.Range(0, 10000f);
+			zOffset = Random.Range(0, 10000f);
+		}
+
+
 	}
 
 	/// <summary>
-	/// 
+	/// Creates quad that allows change within y-axis to create different sea levels as well as allowing different colour layers
 	/// </summary>
 	void CreateMeshShape() {
 		vertices = new Vector3[(xSize + 1) * (zSize + 1)];
 		colours = new Color[vertices.Length];
 
+		// Uses perlin noise to get the height of the terrain based on the x and z axis + offset
 		int vertexIndex = 0;
 		for (int z = 0; z <= zSize; z++) {
 			for (int x = 0; x <= xSize; x++) {
@@ -63,16 +79,12 @@ public class MeshTerrainGenerator : MonoBehaviour {
 
 				vertices[vertexIndex] = new Vector3(x, y, z);
 
-				Color snowColour = Color.white;
-				Color rockColour = Color.grey;
-				Color grassColour = new Color(0, 0.4f, 0.1f);
-				Color seaColour = new Color(0, 0, 0.4f);
-
-				if (y >= (0.8f * 2f)) {
+				// Dependent on how tall the mesh is in the y-axis, different colours are applied
+				if (y > (0.85f * 2f)) {
 					colours[vertexIndex] = snowColour;
-				} else if (y >= (0.6f * 2f)) {
+				} else if (y > (0.65f * 2f)) {
 					colours[vertexIndex] = rockColour;
-				} else if (y >= (0.4f * 2f)) {
+				} else if (y >= (0.25f * 2f)) {
 					colours[vertexIndex] = grassColour;
 				} else {
 					colours[vertexIndex] = seaColour;
@@ -82,12 +94,10 @@ public class MeshTerrainGenerator : MonoBehaviour {
 			}
 		}
 
+		// Generates 2 triangles between 4 vertices to create quads
 		triangles = new int[xSize * zSize * 6];
-
 		int vert = 0;
 		int tris = 0;
-
-		// Generates 2 triangles between 4 points to create quads
 		for (int z = 0; z < zSize; z++) {
 			for (int x = 0; x < xSize; x++) {
 				// Triangle 1
@@ -105,6 +115,8 @@ public class MeshTerrainGenerator : MonoBehaviour {
 			}
 			vert++;
 		}
+
+		UpdateMesh();
 	}
 
 	/// <summary>
