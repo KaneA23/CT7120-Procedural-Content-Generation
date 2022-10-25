@@ -53,11 +53,6 @@ public class MeshTerrainGenerator : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update() {
-		if (useRandomOffsets) {
-			xOffset = Random.Range(0, 10000f);
-			zOffset = Random.Range(0, 10000f);
-		}
-
 		if (Input.GetMouseButtonDown(0)) {
 			CreateMeshShape();
 			//UpdateMesh();
@@ -68,6 +63,11 @@ public class MeshTerrainGenerator : MonoBehaviour {
 	/// Creates quad that allows change within y-axis to create different sea levels as well as allowing different colour layers
 	/// </summary>
 	void CreateMeshShape() {
+		if (useRandomOffsets) {
+			xOffset = Random.Range(0, 10000f);
+			zOffset = Random.Range(0, 10000f);
+		}
+
 		vertices = new Vector3[(xSize + 1) * (zSize + 1)];
 		colours = new Color[vertices.Length];
 
