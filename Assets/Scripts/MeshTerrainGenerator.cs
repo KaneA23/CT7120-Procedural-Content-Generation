@@ -14,6 +14,8 @@ public class MeshTerrainGenerator : MonoBehaviour {
 	[Header("Mesh dimensions")]
 	[SerializeField] private int xSize;
 	[SerializeField] private int zSize;
+	[SerializeField] private float scale;
+	[SerializeField] private int height;
 
 	[Space(10)]
 	[SerializeField] private float xOffset;
@@ -51,17 +53,15 @@ public class MeshTerrainGenerator : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update() {
-		if (Input.GetMouseButtonDown(0)) {
-			CreateMeshShape();
-			//UpdateMesh();
-		}
-
 		if (useRandomOffsets) {
 			xOffset = Random.Range(0, 10000f);
 			zOffset = Random.Range(0, 10000f);
 		}
 
-
+		if (Input.GetMouseButtonDown(0)) {
+			CreateMeshShape();
+			//UpdateMesh();
+		}
 	}
 
 	/// <summary>
@@ -75,16 +75,18 @@ public class MeshTerrainGenerator : MonoBehaviour {
 		int vertexIndex = 0;
 		for (int z = 0; z <= zSize; z++) {
 			for (int x = 0; x <= xSize; x++) {
-				float y = Mathf.PerlinNoise(x * 0.3f + xOffset, z * 0.3f + zOffset) * 2f;
+				float xCoord = (float)x / xSize * scale;
+				float zCoord = (float)z / zSize * scale;
+				float y = Mathf.PerlinNoise(/*x * 0.3f + xOffset, z * 0.3f + zOffset*/xCoord + xOffset, zCoord + zOffset) * height;
 
 				vertices[vertexIndex] = new Vector3(x, y, z);
 
 				// Dependent on how tall the mesh is in the y-axis, different colours are applied
-				if (y > (0.85f * 2f)) {
+				if (y >= (0.85f * height)) {
 					colours[vertexIndex] = snowColour;
-				} else if (y > (0.65f * 2f)) {
+				} else if (y >= (0.65f * height)) {
 					colours[vertexIndex] = rockColour;
-				} else if (y >= (0.25f * 2f)) {
+				} else if (y >= (0.25f * height)) {
 					colours[vertexIndex] = grassColour;
 				} else {
 					colours[vertexIndex] = seaColour;
