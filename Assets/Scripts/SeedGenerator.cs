@@ -31,7 +31,7 @@ public class SeedGenerator : MonoBehaviour {
 
 		// If chosen, the Lehmer generator returns a value to be a seed at random
 		if (useRandomSeed) {
-			seed = (int)PRNG.GenerateNumber(999999999);
+			seed = (int)PRNG.GenerateNumber();
 			gameSeed = seed.ToString();
 		}
 

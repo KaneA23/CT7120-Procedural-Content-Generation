@@ -13,9 +13,9 @@ public class LehmerPRNG {
 	/// Uses the Linear Congruental method to generate a pseudorandom value
 	/// </summary>
 	/// <param name="a_minValue">Smallest value wanted, inclusive with default of 0</param>
-	/// <param name="a_maxValue">Largest value, exclusive</param>
+	/// <param name="a_maxValue">Largest value, exclusive with default being the max value for int32</param>
 	/// <returns>Pseudoranom value</returns>
-	public float GenerateNumber(int a_maxValue, int a_minValue = 0) {
+	public float GenerateNumber(int a_maxValue = 2147483647, int a_minValue = 0) {
 		long x = DateTime.Now.Ticks % m;    // Creates a seed based on current date and time
 		long result = 0;
 		long value;

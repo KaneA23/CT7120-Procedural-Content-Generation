@@ -17,6 +17,7 @@ public class MeshTerrainGenerator : MonoBehaviour {
 	[SerializeField] private float scale;
 	[SerializeField] private int height;
 
+	// Each chunk is 5x5 in perlin noise offsets and 100x100 in mesh position
 	[Space(10)]
 	[SerializeField] private float xOffset;
 	[SerializeField] private float zOffset;
@@ -42,13 +43,16 @@ public class MeshTerrainGenerator : MonoBehaviour {
 		mesh = new Mesh();
 		meshFilter.mesh = mesh;
 
-		xOffset = Random.Range(0, 10000f);
-		zOffset = Random.Range(0, 10000f);
+		//xOffset = Random.Range(0, 10000f);
+		//zOffset = Random.Range(0, 10000f);
+		xOffset = 0;
+		zOffset = 0;
 
 		CreateMeshShape();
+		CreateNeighbourMesh();
 		//UpdateMesh();
 
-		InvokeRepeating(nameof(CreateMeshShape), 5f, 5f);
+		//InvokeRepeating(nameof(CreateMeshShape), 5f, 5f);
 	}
 
 	// Update is called once per frame
@@ -77,20 +81,29 @@ public class MeshTerrainGenerator : MonoBehaviour {
 			for (int x = 0; x <= xSize; x++) {
 				float xCoord = (float)x / xSize * scale;
 				float zCoord = (float)z / zSize * scale;
-				float y = Mathf.PerlinNoise(/*x * 0.3f + xOffset, z * 0.3f + zOffset*/xCoord + xOffset, zCoord + zOffset) * height;
 
-				vertices[vertexIndex] = new Vector3(x, y, z);
+				float y = Mathf.PerlinNoise(/*x * 0.3f + xOffset, z * 0.3f + zOffset*/xCoord + xOffset, zCoord + zOffset);
+
+				vertices[vertexIndex] = new Vector3(x, y * height, z);
 
 				// Dependent on how tall the mesh is in the y-axis, different colours are applied
-				if (y >= (0.85f * height)) {
+				if (y > 0.85f) {
 					colours[vertexIndex] = snowColour;
-				} else if (y >= (0.65f * height)) {
+				} else if (y > 0.65f) {
 					colours[vertexIndex] = rockColour;
-				} else if (y >= (0.25f * height)) {
-					colours[vertexIndex] = grassColour;
+				} else if (y > 0.25f) {
+					colours[vertexIndex] = grassColour; //new Color(grassColour.r, grassColour.g +Random.Range(-0.1f, 0.1f), grassColour.b);
 				} else {
 					colours[vertexIndex] = seaColour;
 				}
+
+				//if (y > 0.3f) {
+				//	colours[vertexIndex] = snowColour;
+				//} else if (y >= 0.25f) {
+				//	colours[vertexIndex] = rockColour;
+				//} else {
+				//	colours[vertexIndex] = grassColour;
+				//}
 
 				vertexIndex++;
 			}
@@ -121,6 +134,11 @@ public class MeshTerrainGenerator : MonoBehaviour {
 		UpdateMesh();
 	}
 
+	void CreateNeighbourMesh() {
+		//transform.position = new Vector3(transform.position.x + 100f, 0, transform.position.z + 100f);
+
+	}
+
 	/// <summary>
 	/// Adds all calculated triangles to the mesh
 	/// </summary>
@@ -129,7 +147,6 @@ public class MeshTerrainGenerator : MonoBehaviour {
 
 		mesh.vertices = vertices;
 		mesh.triangles = triangles;
-
 		mesh.colors = colours;
 
 		mesh.RecalculateBounds();
