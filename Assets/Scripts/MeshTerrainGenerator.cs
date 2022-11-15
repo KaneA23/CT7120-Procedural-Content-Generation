@@ -36,6 +36,8 @@ public class MeshTerrainGenerator : MonoBehaviour {
 
 	private MeshCollider meshColl;
 
+	public MeshFilter chunkPrefab;
+
 	private void Awake() {
 		meshFilter = GetComponent<MeshFilter>();
 		meshColl = GetComponent<MeshCollider>();
@@ -49,9 +51,17 @@ public class MeshTerrainGenerator : MonoBehaviour {
 		xOffset = 0;
 		zOffset = 0;
 
-		CreateMeshShape();
+		//CreateMeshShape();
 		//CreateNeighbourMesh();
 		//UpdateMesh();
+
+		for (int z = 0; z < 5; z++) {
+			for (int x = 0; x < 5; x++) {
+				CreateMeshShapes(x, z);
+				UpdateMeshes(x, z);
+			}
+		}
+
 
 		//InvokeRepeating(nameof(CreateMeshShape), 5f, 5f);
 	}
@@ -59,24 +69,47 @@ public class MeshTerrainGenerator : MonoBehaviour {
 	// Update is called once per frame
 	void Update() {
 		if (Input.GetMouseButtonDown(0)) {
-			CreateMeshShape();
+			if (useRandomOffsets) {
+				xOffset = Random.Range(0, 10000f);
+				zOffset = Random.Range(0, 10000f);
+			}
+			//CreateMeshShape();
+			ResetMeshes();
 		}
 
 		if (Input.GetKey(KeyCode.LeftArrow)) {
 			xOffset -= 0.01f;
-			CreateMeshShape();
+			//CreateMeshShape();
+			ResetMeshes();
 		}
 		if (Input.GetKey(KeyCode.RightArrow)) {
 			xOffset += 0.01f;
-			CreateMeshShape();
+			//CreateMeshShape();
+			ResetMeshes();
 		}
 		if (Input.GetKey(KeyCode.DownArrow)) {
 			zOffset -= 0.01f;
-			CreateMeshShape();
+			//CreateMeshShape();
+			ResetMeshes();
 		}
 		if (Input.GetKey(KeyCode.UpArrow)) {
 			zOffset += 0.01f;
-			CreateMeshShape();
+			//CreateMeshShape();
+			ResetMeshes();
+		}
+	}
+
+	void ResetMeshes() {
+		GameObject[] oldMeshes = GameObject.FindGameObjectsWithTag("terrain");
+		foreach (GameObject mesh in oldMeshes) {
+			Destroy(mesh);
+		}
+
+		for (int z = 0; z < 5; z++) {
+			for (int x = 0; x < 5; x++) {
+				CreateMeshShapes(x, z);
+				UpdateMeshes(x, z);
+			}
 		}
 	}
 
@@ -154,6 +187,77 @@ public class MeshTerrainGenerator : MonoBehaviour {
 		UpdateMesh();
 	}
 
+	void CreateMeshShapes(int a_xOffset, int a_zOffset) {
+		Debug.Log("Creating many meshes");
+
+		vertices = new Vector3[(xSize + 1) * (zSize + 1)];
+		colours = new Color[vertices.Length];
+
+		// Uses perlin noise to get the height of the terrain based on the x and z axis + offset
+		int vertexIndex = 0;
+		float xCoord;
+		float zCoord;
+		float y;
+		for (int z = 0; z <= zSize; z++) {
+			for (int x = 0; x <= xSize; x++) {
+				xCoord = (float)x / xSize * scale;
+				zCoord = (float)z / zSize * scale;
+
+				xCoord += (5 * a_xOffset);
+				zCoord += (5 * a_zOffset);
+
+				y = Mathf.PerlinNoise(/*x * 0.3f + xOffset, z * 0.3f + zOffset*/xCoord + xOffset, zCoord + zOffset);
+
+				vertices[vertexIndex] = new Vector3(x, y * height, z);
+
+				// Dependent on how tall the mesh is in the y-axis, different colours are applied
+				if (y > 0.85f) {
+					colours[vertexIndex] = snowColour;
+				} else if (y > 0.65f) {
+					colours[vertexIndex] = rockColour;
+				} else if (y > 0.25f) {
+					colours[vertexIndex] = grassColour; //new Color(grassColour.r, grassColour.g +Random.Range(-0.1f, 0.1f), grassColour.b);
+				} else {
+					colours[vertexIndex] = seaColour;
+				}
+
+				//if (y > 0.3f) {
+				//	colours[vertexIndex] = snowColour;
+				//} else if (y >= 0.25f) {
+				//	colours[vertexIndex] = rockColour;
+				//} else {
+				//	colours[vertexIndex] = grassColour;
+				//}
+
+				vertexIndex++;
+			}
+		}
+
+		// Generates 2 triangles between 4 vertices to create quads
+		triangles = new int[xSize * zSize * 6];
+		int vert = 0;
+		int tris = 0;
+		for (int z = 0; z < zSize; z++) {
+			for (int x = 0; x < xSize; x++) {
+				// Triangle 1
+				triangles[tris + 0] = vert;
+				triangles[tris + 1] = vert + xSize + 1;
+				triangles[tris + 2] = vert + 1;
+
+				// Triangle 2
+				triangles[tris + 3] = triangles[tris + 2];
+				triangles[tris + 4] = triangles[tris + 1];
+				triangles[tris + 5] = vert + xSize + 2;
+
+				vert++;
+				tris += 6;
+			}
+			vert++;
+		}
+
+		//UpdateMeshes();
+	}
+
 	/// <summary>
 	/// Adds all calculated triangles to the mesh
 	/// </summary>
@@ -168,6 +272,24 @@ public class MeshTerrainGenerator : MonoBehaviour {
 		mesh.RecalculateNormals();
 
 		//meshColl.sharedMesh = mesh;
+	}
+
+	void UpdateMeshes(int a_xPos, int a_zPos) {
+		MeshFilter filter = Instantiate(chunkPrefab, new Vector3(a_xPos * xSize, 0, a_zPos * zSize), Quaternion.identity);
+
+		MeshCollider currentMeshColl = filter.GetComponent<MeshCollider>();
+
+		Mesh currentMesh = filter.mesh;
+		currentMesh.Clear();
+
+		currentMesh.vertices = vertices;
+		currentMesh.triangles = triangles;
+		currentMesh.colors = colours;
+
+		//currentMeshColl.sharedMesh = currentMesh;
+
+		currentMesh.RecalculateBounds();
+		currentMesh.RecalculateNormals();
 	}
 
 	private void OnDrawGizmos() {

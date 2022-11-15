@@ -406,6 +406,7 @@ MonoBehaviour:
   rockColour: {r: 0.35, g: 0.35, b: 0.35, a: 1}
   grassColour: {r: 0, g: 0.3, b: 0.1, a: 1}
   seaColour: {r: 0, g: 0, b: 0.4, a: 1}
+  chunkPrefab: {fileID: 2568003837509934665, guid: 3a7033619a795704d98d5a51a28184f8, type: 3}
 --- !u!23 &1094039835
 MeshRenderer:
   m_ObjectHideFlags: 0
