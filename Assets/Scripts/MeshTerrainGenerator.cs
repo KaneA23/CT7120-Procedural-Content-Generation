@@ -6,7 +6,7 @@ using UnityEngine;
 /// Controls the creation of a mesh terrain and allows basic alterations (i.e. layer colouring).
 /// Created by: Kane Adams
 /// </summary>
-[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
+[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider))]
 public class MeshTerrainGenerator : MonoBehaviour {
 	private Mesh mesh;
 	private MeshFilter meshFilter;
@@ -34,8 +34,11 @@ public class MeshTerrainGenerator : MonoBehaviour {
 
 	private Color[] colours;
 
+	private MeshCollider meshColl;
+
 	private void Awake() {
 		meshFilter = GetComponent<MeshFilter>();
+		meshColl = GetComponent<MeshCollider>();
 	}
 
 	// Start is called before the first frame update
@@ -43,13 +46,11 @@ public class MeshTerrainGenerator : MonoBehaviour {
 		mesh = new Mesh();
 		meshFilter.mesh = mesh;
 
-		//xOffset = Random.Range(0, 10000f);
-		//zOffset = Random.Range(0, 10000f);
 		xOffset = 0;
 		zOffset = 0;
 
 		CreateMeshShape();
-		CreateNeighbourMesh();
+		//CreateNeighbourMesh();
 		//UpdateMesh();
 
 		//InvokeRepeating(nameof(CreateMeshShape), 5f, 5f);
@@ -59,7 +60,23 @@ public class MeshTerrainGenerator : MonoBehaviour {
 	void Update() {
 		if (Input.GetMouseButtonDown(0)) {
 			CreateMeshShape();
-			//UpdateMesh();
+		}
+
+		if (Input.GetKey(KeyCode.LeftArrow)) {
+			xOffset -= 0.01f;
+			CreateMeshShape();
+		}
+		if (Input.GetKey(KeyCode.RightArrow)) {
+			xOffset += 0.01f;
+			CreateMeshShape();
+		}
+		if (Input.GetKey(KeyCode.DownArrow)) {
+			zOffset -= 0.01f;
+			CreateMeshShape();
+		}
+		if (Input.GetKey(KeyCode.UpArrow)) {
+			zOffset += 0.01f;
+			CreateMeshShape();
 		}
 	}
 
@@ -77,12 +94,15 @@ public class MeshTerrainGenerator : MonoBehaviour {
 
 		// Uses perlin noise to get the height of the terrain based on the x and z axis + offset
 		int vertexIndex = 0;
+		float xCoord;
+		float zCoord;
+		float y;
 		for (int z = 0; z <= zSize; z++) {
 			for (int x = 0; x <= xSize; x++) {
-				float xCoord = (float)x / xSize * scale;
-				float zCoord = (float)z / zSize * scale;
+				xCoord = (float)x / xSize * scale;
+				zCoord = (float)z / zSize * scale;
 
-				float y = Mathf.PerlinNoise(/*x * 0.3f + xOffset, z * 0.3f + zOffset*/xCoord + xOffset, zCoord + zOffset);
+				y = Mathf.PerlinNoise(/*x * 0.3f + xOffset, z * 0.3f + zOffset*/xCoord + xOffset, zCoord + zOffset);
 
 				vertices[vertexIndex] = new Vector3(x, y * height, z);
 
@@ -134,11 +154,6 @@ public class MeshTerrainGenerator : MonoBehaviour {
 		UpdateMesh();
 	}
 
-	void CreateNeighbourMesh() {
-		//transform.position = new Vector3(transform.position.x + 100f, 0, transform.position.z + 100f);
-
-	}
-
 	/// <summary>
 	/// Adds all calculated triangles to the mesh
 	/// </summary>
@@ -151,6 +166,8 @@ public class MeshTerrainGenerator : MonoBehaviour {
 
 		mesh.RecalculateBounds();
 		mesh.RecalculateNormals();
+
+		//meshColl.sharedMesh = mesh;
 	}
 
 	private void OnDrawGizmos() {
