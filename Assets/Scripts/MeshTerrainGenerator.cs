@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Pool;
 
 /// <summary>
 /// Controls the creation of a mesh terrain and allows basic alterations (i.e. layer colouring).
@@ -38,6 +39,13 @@ public class MeshTerrainGenerator : MonoBehaviour {
 
 	public MeshFilter chunkPrefab;
 
+	private ObjectPool<MeshFilter> meshPool;
+
+	private GameObject[,] grid;
+
+	[SerializeField] private int gridX;
+	[SerializeField] private int gridZ;
+
 	private void Awake() {
 		meshFilter = GetComponent<MeshFilter>();
 		meshColl = GetComponent<MeshCollider>();
@@ -45,6 +53,18 @@ public class MeshTerrainGenerator : MonoBehaviour {
 
 	// Start is called before the first frame update
 	void Start() {
+		meshPool = new ObjectPool<MeshFilter>(() => {
+			return Instantiate(chunkPrefab);
+		}, meshObj => {
+			meshObj.gameObject.SetActive(true);
+		}, meshObj => {
+			meshObj.gameObject.SetActive(false);
+		}, meshObj => {
+			Destroy(meshObj.gameObject);
+		}, false, 9, 100);
+
+		grid = new GameObject[gridX, gridZ];
+
 		mesh = new Mesh();
 		meshFilter.mesh = mesh;
 
@@ -55,14 +75,20 @@ public class MeshTerrainGenerator : MonoBehaviour {
 		//CreateNeighbourMesh();
 		//UpdateMesh();
 
-		for (int z = 0; z < 5; z++) {
-			for (int x = 0; x < 5; x++) {
+		for (int z = 0; z < 10; z++) {
+			for (int x = 0; x < 10; x++) {
 				CreateMeshShapes(x, z);
 				UpdateMeshes(x, z);
 			}
 		}
 
+		foreach (GameObject cell in grid) {
+			if (cell == null) {
+				continue;
+			}
 
+			Debug.Log(cell.transform.position.ToString());
+		}
 		//InvokeRepeating(nameof(CreateMeshShape), 5f, 5f);
 	}
 
@@ -188,8 +214,6 @@ public class MeshTerrainGenerator : MonoBehaviour {
 	}
 
 	void CreateMeshShapes(int a_xOffset, int a_zOffset) {
-		Debug.Log("Creating many meshes");
-
 		vertices = new Vector3[(xSize + 1) * (zSize + 1)];
 		colours = new Color[vertices.Length];
 
@@ -275,7 +299,12 @@ public class MeshTerrainGenerator : MonoBehaviour {
 	}
 
 	void UpdateMeshes(int a_xPos, int a_zPos) {
-		MeshFilter filter = Instantiate(chunkPrefab, new Vector3(a_xPos * xSize, 0, a_zPos * zSize), Quaternion.identity);
+		//MeshFilter filter = Instantiate(chunkPrefab, new Vector3(a_xPos * xSize, 0, a_zPos * zSize), Quaternion.identity);
+		//MeshFilter filter = meshPool.Get().GetComponent<MeshFilter>();
+		MeshFilter filter = meshPool.Get();
+		filter.gameObject.transform.position = new Vector3(a_xPos * xSize, 0, a_zPos * zSize);
+
+		grid[a_xPos, a_zPos] = filter.gameObject;
 
 		MeshCollider currentMeshColl = filter.GetComponent<MeshCollider>();
 
@@ -286,7 +315,7 @@ public class MeshTerrainGenerator : MonoBehaviour {
 		currentMesh.triangles = triangles;
 		currentMesh.colors = colours;
 
-		//currentMeshColl.sharedMesh = currentMesh;
+		currentMeshColl.sharedMesh = currentMesh;
 
 		currentMesh.RecalculateBounds();
 		currentMesh.RecalculateNormals();
