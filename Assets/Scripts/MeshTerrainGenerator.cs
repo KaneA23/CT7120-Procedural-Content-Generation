@@ -46,9 +46,16 @@ public class MeshTerrainGenerator : MonoBehaviour {
 	[SerializeField] private int gridX;
 	[SerializeField] private int gridZ;
 
+	[SerializeField] private int currentX;
+	[SerializeField] private int currentZ;
+
+	[SerializeField] private GameObject player;
+
 	private void Awake() {
 		meshFilter = GetComponent<MeshFilter>();
 		meshColl = GetComponent<MeshCollider>();
+
+		player = GameObject.FindGameObjectWithTag("Player");
 	}
 
 	// Start is called before the first frame update
@@ -63,7 +70,7 @@ public class MeshTerrainGenerator : MonoBehaviour {
 			Destroy(meshObj.gameObject);
 		}, false, 9, 100);
 
-		grid = new GameObject[gridX, gridZ];
+		grid = new GameObject[gridX * 2, gridZ * 2];
 
 		mesh = new Mesh();
 		meshFilter.mesh = mesh;
@@ -71,12 +78,20 @@ public class MeshTerrainGenerator : MonoBehaviour {
 		xOffset = 0;
 		zOffset = 0;
 
+		xOffset = Random.Range(0, 100000);
+		zOffset = Random.Range(0, 100000);
+
+		currentX = 0;
+		currentZ = 0;
+
+
+
 		//CreateMeshShape();
 		//CreateNeighbourMesh();
 		//UpdateMesh();
 
-		for (int z = 0; z < 10; z++) {
-			for (int x = 0; x < 10; x++) {
+		for (int z = -10; z <= 10; z++) {
+			for (int x = -10; x <= 10; x++) {
 				CreateMeshShapes(x, z);
 				UpdateMeshes(x, z);
 			}
@@ -87,41 +102,64 @@ public class MeshTerrainGenerator : MonoBehaviour {
 				continue;
 			}
 
+			cell.gameObject.SetActive(false);
 			Debug.Log(cell.transform.position.ToString());
 		}
+
+		UpdateActiveChunks();
 		//InvokeRepeating(nameof(CreateMeshShape), 5f, 5f);
 	}
 
 	// Update is called once per frame
 	void Update() {
-		if (Input.GetMouseButtonDown(0)) {
-			if (useRandomOffsets) {
-				xOffset = Random.Range(0, 10000f);
-				zOffset = Random.Range(0, 10000f);
-			}
-			//CreateMeshShape();
-			ResetMeshes();
-		}
+		//if (Input.GetMouseButtonDown(0)) {
+		//	if (useRandomOffsets) {
+		//		xOffset = Random.Range(0, 10000f);
+		//		zOffset = Random.Range(0, 10000f);
+		//	}
+		//	//CreateMeshShape();
+		//	ResetMeshes();
+		//}
 
-		if (Input.GetKey(KeyCode.LeftArrow)) {
-			xOffset -= 0.01f;
+		if (player.transform.position.x < currentX * 100 && currentX > -9) {
+			//xOffset -= 0.01f;
 			//CreateMeshShape();
-			ResetMeshes();
+			//ResetMeshes();
+
+			UpdateInactiveChunks();
+
+			currentX--;
+			UpdateActiveChunks();
 		}
-		if (Input.GetKey(KeyCode.RightArrow)) {
-			xOffset += 0.01f;
+		if (player.transform.position.x > (currentX + 1) * 100 && currentX < 9) {
+			//xOffset += 0.01f;
 			//CreateMeshShape();
-			ResetMeshes();
+			//ResetMeshes();
+
+			UpdateInactiveChunks();
+
+			currentX++;
+			UpdateActiveChunks();
 		}
-		if (Input.GetKey(KeyCode.DownArrow)) {
-			zOffset -= 0.01f;
+		if (player.transform.position.z < currentZ * 100 && currentZ > -9) {
+			//zOffset -= 0.01f;
 			//CreateMeshShape();
-			ResetMeshes();
+			//ResetMeshes();
+
+			UpdateInactiveChunks();
+
+			currentZ--;
+			UpdateActiveChunks();
 		}
-		if (Input.GetKey(KeyCode.UpArrow)) {
-			zOffset += 0.01f;
+		if (player.transform.position.z > (currentZ + 1) * 100 && currentZ < 9) {
+			//zOffset += 0.01f;
 			//CreateMeshShape();
-			ResetMeshes();
+			//ResetMeshes();
+			
+			UpdateInactiveChunks();
+
+			currentZ++;
+			UpdateActiveChunks();
 		}
 	}
 
@@ -131,8 +169,8 @@ public class MeshTerrainGenerator : MonoBehaviour {
 			Destroy(mesh);
 		}
 
-		for (int z = 0; z < 5; z++) {
-			for (int x = 0; x < 5; x++) {
+		for (int z = -5; z < 5; z++) {
+			for (int x = -5; x < 5; x++) {
 				CreateMeshShapes(x, z);
 				UpdateMeshes(x, z);
 			}
@@ -303,8 +341,9 @@ public class MeshTerrainGenerator : MonoBehaviour {
 		//MeshFilter filter = meshPool.Get().GetComponent<MeshFilter>();
 		MeshFilter filter = meshPool.Get();
 		filter.gameObject.transform.position = new Vector3(a_xPos * xSize, 0, a_zPos * zSize);
+		filter.gameObject.transform.parent = GameObject.Find("Terrain").transform;
 
-		grid[a_xPos, a_zPos] = filter.gameObject;
+		grid[a_xPos + gridX, a_zPos + gridZ] = filter.gameObject;
 
 		MeshCollider currentMeshColl = filter.GetComponent<MeshCollider>();
 
@@ -319,6 +358,37 @@ public class MeshTerrainGenerator : MonoBehaviour {
 
 		currentMesh.RecalculateBounds();
 		currentMesh.RecalculateNormals();
+	}
+
+
+	void UpdateInactiveChunks() {
+		grid[currentX + gridX, currentZ + gridZ - 1].gameObject.SetActive(false);
+		grid[currentX + gridX, currentZ + gridZ].gameObject.SetActive(false);
+		grid[currentX + gridX, currentZ + gridZ + 1].gameObject.SetActive(false);
+
+		grid[currentX + gridX - 1, currentZ + gridZ - 1].gameObject.SetActive(false);
+		grid[currentX + gridX - 1, currentZ + gridZ].gameObject.SetActive(false);
+		grid[currentX + gridX - 1, currentZ + gridZ + 1].gameObject.SetActive(false);
+
+		grid[currentX + gridX + 1, currentZ + gridZ - 1].gameObject.SetActive(false);
+		grid[currentX + gridX + 1, currentZ + gridZ].gameObject.SetActive(false);
+		grid[currentX + gridX + 1, currentZ + gridZ + 1].gameObject.SetActive(false);
+	}
+
+	void UpdateActiveChunks() {
+		Debug.Log("Current X: " + (currentX + gridX) + ", Current Z: " + (currentZ + gridZ));
+
+		grid[currentX + gridX, currentZ + gridZ - 1].gameObject.SetActive(true);
+		grid[currentX + gridX, currentZ + gridZ].gameObject.SetActive(true);
+		grid[currentX + gridX, currentZ + gridZ + 1].gameObject.SetActive(true);
+
+		grid[currentX + gridX - 1, currentZ + gridZ - 1].gameObject.SetActive(true);
+		grid[currentX + gridX - 1, currentZ + gridZ].gameObject.SetActive(true);
+		grid[currentX + gridX - 1, currentZ + gridZ + 1].gameObject.SetActive(true);
+
+		grid[currentX + gridX + 1, currentZ + gridZ - 1].gameObject.SetActive(true);
+		grid[currentX + gridX + 1, currentZ + gridZ].gameObject.SetActive(true);
+		grid[currentX + gridX + 1, currentZ + gridZ + 1].gameObject.SetActive(true);
 	}
 
 	private void OnDrawGizmos() {
