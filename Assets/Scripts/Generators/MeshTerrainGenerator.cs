@@ -102,12 +102,17 @@ public class MeshTerrainGenerator : MonoBehaviour {
 				continue;
 			}
 
+			FindObjectOfType<TreeSpawner>().SpawnTrees(cell.transform);
+
 			cell.gameObject.SetActive(false);
 			Debug.Log(cell.transform.position.ToString());
 		}
 
 		UpdateActiveChunks();
 		//InvokeRepeating(nameof(CreateMeshShape), 5f, 5f);
+
+		RenderSettings.fog = (player != null);
+
 	}
 
 	// Update is called once per frame
@@ -121,45 +126,47 @@ public class MeshTerrainGenerator : MonoBehaviour {
 		//	ResetMeshes();
 		//}
 
-		if (player.transform.position.x < currentX * 100 && currentX > -9) {
-			//xOffset -= 0.01f;
-			//CreateMeshShape();
-			//ResetMeshes();
+		if (player != null) {
+			if (player.transform.position.x < currentX * 100 && currentX > -9) {
+				//xOffset -= 0.01f;
+				//CreateMeshShape();
+				//ResetMeshes();
 
-			UpdateInactiveChunks();
+				UpdateInactiveChunks();
 
-			currentX--;
-			UpdateActiveChunks();
-		}
-		if (player.transform.position.x > (currentX + 1) * 100 && currentX < 9) {
-			//xOffset += 0.01f;
-			//CreateMeshShape();
-			//ResetMeshes();
+				currentX--;
+				UpdateActiveChunks();
+			}
+			if (player.transform.position.x > (currentX + 1) * 100 && currentX < 9) {
+				//xOffset += 0.01f;
+				//CreateMeshShape();
+				//ResetMeshes();
 
-			UpdateInactiveChunks();
+				UpdateInactiveChunks();
 
-			currentX++;
-			UpdateActiveChunks();
-		}
-		if (player.transform.position.z < currentZ * 100 && currentZ > -9) {
-			//zOffset -= 0.01f;
-			//CreateMeshShape();
-			//ResetMeshes();
+				currentX++;
+				UpdateActiveChunks();
+			}
+			if (player.transform.position.z < currentZ * 100 && currentZ > -9) {
+				//zOffset -= 0.01f;
+				//CreateMeshShape();
+				//ResetMeshes();
 
-			UpdateInactiveChunks();
+				UpdateInactiveChunks();
 
-			currentZ--;
-			UpdateActiveChunks();
-		}
-		if (player.transform.position.z > (currentZ + 1) * 100 && currentZ < 9) {
-			//zOffset += 0.01f;
-			//CreateMeshShape();
-			//ResetMeshes();
-			
-			UpdateInactiveChunks();
+				currentZ--;
+				UpdateActiveChunks();
+			}
+			if (player.transform.position.z > (currentZ + 1) * 100 && currentZ < 9) {
+				//zOffset += 0.01f;
+				//CreateMeshShape();
+				//ResetMeshes();
 
-			currentZ++;
-			UpdateActiveChunks();
+				UpdateInactiveChunks();
+
+				currentZ++;
+				UpdateActiveChunks();
+			}
 		}
 	}
 
@@ -342,6 +349,7 @@ public class MeshTerrainGenerator : MonoBehaviour {
 		MeshFilter filter = meshPool.Get();
 		filter.gameObject.transform.position = new Vector3(a_xPos * xSize, 0, a_zPos * zSize);
 		filter.gameObject.transform.parent = GameObject.Find("Terrain").transform;
+		filter.gameObject.layer = LayerMask.NameToLayer("Terrain"); ;
 
 		grid[a_xPos + gridX, a_zPos + gridZ] = filter.gameObject;
 
