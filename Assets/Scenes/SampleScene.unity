@@ -308,7 +308,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bdb6a314ada29f040a108bb47aa38de4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  treePrefab: {fileID: 1915035298906423408, guid: c6cc056eb37a3d4448281f3cc04f415a, type: 3}
+  treePrefabs:
+  - {fileID: 1915035298906423408, guid: c6cc056eb37a3d4448281f3cc04f415a, type: 3}
+  - {fileID: 1915035298906423408, guid: 70fc74d606aaeb54085ac6663c5bf569, type: 3}
   terrainLayer:
     serializedVersion: 2
     m_Bits: 64

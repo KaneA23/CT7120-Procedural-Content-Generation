@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -7,7 +5,7 @@ using UnityEngine;
 /// Created by: Kane Adams
 /// </summary>
 public class TreeSpawner : MonoBehaviour {
-	[SerializeField] private GameObject treePrefab;
+	[SerializeField] private GameObject[] treePrefabs;
 
 	private GameObject currentTree;
 	private RaycastHit hit;
@@ -40,17 +38,25 @@ public class TreeSpawner : MonoBehaviour {
 			raycastOrigin = new Vector3(a_worldPos.position.x + Random.Range(0, 100), a_worldPos.position.y + 25, a_worldPos.position.z + Random.Range(0, 100));
 
 			if (Physics.Raycast(raycastOrigin, Vector3.down, out hit, 25, terrainLayer) && hit.point.y > 6 && hit.point.y < 11) {
-				currentTree = Instantiate(treePrefab);
+				//currentTree = Instantiate(treePrefab);
+				currentTree = Instantiate(treePrefabs[Random.Range(0, treePrefabs.Length)]);
 				currentTree.transform.rotation = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
 
 				currentTree.transform.parent = a_worldPos;
 				currentTree.transform.position = hit.point;
 
-				treeOffsetY = currentTree.transform.position.y + (currentTree.transform.localScale.y / 2);
+				if (currentTree.transform.localScale.y > 1) {
+					treeOffsetY = currentTree.transform.position.y + 1/*+ (currentTree.transform.localScale.y / 2)*/;
+					currentTree.transform.localRotation = Quaternion.Euler(Random.Range(-5, 5), currentTree.transform.localRotation.y, Random.Range(-5, 5));
+				} else {
+					treeOffsetY = currentTree.transform.position.y + (currentTree.transform.localScale.y / 2);
+				}
+
 
 				currentTree.transform.localPosition = new Vector3(raycastOrigin.x - a_worldPos.position.x, treeOffsetY, raycastOrigin.z - a_worldPos.position.z);
 
-				currentTree.GetComponent<MeshRenderer>().material.color = Random.ColorHSV();
+
+				//currentTree.GetComponent<MeshRenderer>().material.color = Random.ColorHSV();
 			}
 		}
 	}
