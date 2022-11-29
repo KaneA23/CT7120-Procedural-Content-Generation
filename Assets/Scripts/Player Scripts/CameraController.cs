@@ -2,13 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Controls the position of the player's first person camera.
+/// Created by: Kane Adams
+/// </summary>
 public class CameraController : MonoBehaviour {
 	[Header("Camera Settings")]
 	[SerializeField] private float mouseSensitivity = 10f;
 
 	private float mouseX;
 	private float mouseY;
-	float xRotation = 0f;
+	private float xRotation = 0f;
 
 	private Transform playerBody;
 
@@ -25,14 +29,23 @@ public class CameraController : MonoBehaviour {
 	// Update is called once per frame
 	void Update() {
 		PlayerInput();
+	}
+
+	private void LateUpdate() {
 		RotateCamera();
 	}
 
+	/// <summary>
+	/// Collects data on where the mouse is within the screen
+	/// </summary>
 	void PlayerInput() {
 		mouseX = Input.GetAxisRaw("Mouse X") * mouseSensitivity;
 		mouseY = Input.GetAxisRaw("Mouse Y") * mouseSensitivity;
 	}
 
+	/// <summary>
+	/// Updates camera rotation dependent on where player mouses the mouse
+	/// </summary>
 	void RotateCamera() {
 		xRotation -= mouseY;
 		xRotation = Mathf.Clamp(xRotation, -90f, 90f);

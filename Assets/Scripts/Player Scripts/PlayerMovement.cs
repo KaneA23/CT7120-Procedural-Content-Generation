@@ -2,15 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Controls the player movement behaviours in a first person character.
+/// Created by: Kane Adams
+/// </summary>
 public class PlayerMovement : MonoBehaviour {
-	[SerializeField] private float speed = 15f;
+	private float speed = 10f;
 
 	private float hMovement;
 	private float vMovement;
 
-	Vector3 moveDir;
-
 	private Rigidbody rb;
+	private Vector3 moveDir;
 
 	private void Awake() {
 		rb = GetComponent<Rigidbody>();
@@ -30,27 +33,17 @@ public class PlayerMovement : MonoBehaviour {
 		MovePlayer();
 	}
 
+	/// <summary>
+	/// Collects data on what buttons player are pressing
+	/// </summary>
 	private void PlayerInput() {
-		//if (Input.GetKey(KeyCode.A)) {
-		//	hMovement = -1;
-		//} else if (Input.GetKey(KeyCode.D)) {
-		//	hMovement = 1;
-		//} else {
-		//	hMovement = 0;
-		//}
-		//
-		//if (Input.GetKey(KeyCode.S)) {
-		//	vMovement = -1;
-		//} else if (Input.GetKey(KeyCode.W)) {
-		//	vMovement = 1;
-		//} else {
-		//	vMovement = 0;
-		//}
-
 		hMovement = Input.GetAxisRaw("Horizontal");
 		vMovement = Input.GetAxisRaw("Vertical");
 	}
 
+	/// <summary>
+	/// Moves player character in a direction dependent on player input
+	/// </summary>
 	private void MovePlayer() {
 		moveDir = transform.forward * vMovement + transform.right * hMovement;
 
