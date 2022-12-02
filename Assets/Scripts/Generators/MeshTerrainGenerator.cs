@@ -7,7 +7,6 @@ using UnityEngine.Pool;
 /// Controls the creation of a mesh terrain and allows basic alterations (i.e. layer colouring).
 /// Created by: Kane Adams
 /// </summary>
-[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider))]
 public class MeshTerrainGenerator : MonoBehaviour {
 	private Mesh mesh;
 	private MeshFilter meshFilter;
@@ -35,8 +34,6 @@ public class MeshTerrainGenerator : MonoBehaviour {
 
 	private Color[] colours;
 
-	private MeshCollider meshColl;
-
 	[SerializeField] private MeshFilter chunkPrefab;
 
 	private ObjectPool<MeshFilter> meshPool;
@@ -53,13 +50,12 @@ public class MeshTerrainGenerator : MonoBehaviour {
 
 	private void Awake() {
 		meshFilter = GetComponent<MeshFilter>();
-		meshColl = GetComponent<MeshCollider>();
 
 		player = GameObject.FindGameObjectWithTag("Player");
 	}
 
 	// Start is called before the first frame update
-	void Start() {
+	private void Start() {
 		meshPool = new ObjectPool<MeshFilter>(() => {
 			return Instantiate(chunkPrefab);
 		}, meshObj => {
@@ -106,7 +102,7 @@ public class MeshTerrainGenerator : MonoBehaviour {
 	}
 
 	// Update is called once per frame
-	void Update() {
+	private void Update() {
 		//if (Input.GetMouseButtonDown(0)) {
 		//	if (useRandomOffsets) {
 		//		xOffset = Random.Range(0, 10000f);
@@ -209,7 +205,7 @@ public class MeshTerrainGenerator : MonoBehaviour {
 	/// <summary>
 	/// Adds all calculated triangles to the mesh
 	/// </summary>
-	void UpdateMeshes(int a_xPos, int a_zPos) {
+	private void UpdateMeshes(int a_xPos, int a_zPos) {
 		MeshFilter filter = meshPool.Get();
 		filter.gameObject.transform.position = new Vector3(a_xPos * xSize, 0, a_zPos * zSize);
 		filter.gameObject.transform.parent = GameObject.Find("Terrain").transform;
@@ -235,7 +231,7 @@ public class MeshTerrainGenerator : MonoBehaviour {
 	/// <summary>
 	/// Sets all meshes as inactive
 	/// </summary>
-	void UpdateInactiveChunks() {
+	private void UpdateInactiveChunks() {
 		grid[currentX + gridX, currentZ + gridZ - 1].gameObject.SetActive(false);
 		grid[currentX + gridX, currentZ + gridZ].gameObject.SetActive(false);
 		grid[currentX + gridX, currentZ + gridZ + 1].gameObject.SetActive(false);
@@ -252,9 +248,7 @@ public class MeshTerrainGenerator : MonoBehaviour {
 	/// <summary>
 	/// Sets all meshes in a 3x3 grid around player as active
 	/// </summary>
-	void UpdateActiveChunks() {
-		//Debug.Log("Current X: " + (currentX + gridX) + ", Current Z: " + (currentZ + gridZ));
-
+	private void UpdateActiveChunks() {
 		grid[currentX + gridX, currentZ + gridZ - 1].gameObject.SetActive(true);
 		grid[currentX + gridX, currentZ + gridZ].gameObject.SetActive(true);
 		grid[currentX + gridX, currentZ + gridZ + 1].gameObject.SetActive(true);

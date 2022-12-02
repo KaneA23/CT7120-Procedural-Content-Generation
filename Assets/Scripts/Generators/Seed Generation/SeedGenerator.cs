@@ -23,7 +23,7 @@ public class SeedGenerator : MonoBehaviour {
 	/// <summary>
 	/// Gives user a seed dependent on input given or by random
 	/// </summary>
-	void GenerateSeed() {
+	private void GenerateSeed() {
 		// Allows the user to write words and numbers as a seed
 		if (useStringSeed) {
 			seed = gameSeed.GetHashCode();

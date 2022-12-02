@@ -30,8 +30,6 @@ public class TreeSpawner : MonoBehaviour {
 	/// </summary>
 	/// <param name="a_worldPos">Mesh that trees are to be spawned on</param>
 	public void SpawnTrees(Transform a_worldPos) {
-		//Vector3 raycastOrigin = new Vector3(a_worldPos.position.x, a_worldPos.position.y + 10, a_worldPos.position.z);
-
 		treeAmount = Random.Range(100, 250);
 
 		for (int i = 0; i < treeAmount; i++) {
@@ -52,11 +50,7 @@ public class TreeSpawner : MonoBehaviour {
 					treeOffsetY = currentTree.transform.position.y + (currentTree.transform.localScale.y / 2);
 				}
 
-
 				currentTree.transform.localPosition = new Vector3(raycastOrigin.x - a_worldPos.position.x, treeOffsetY, raycastOrigin.z - a_worldPos.position.z);
-
-
-				//currentTree.GetComponent<MeshRenderer>().material.color = Random.ColorHSV();
 			}
 		}
 	}

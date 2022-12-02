@@ -21,13 +21,13 @@ public class CameraController : MonoBehaviour {
 	}
 
 	// Start is called before the first frame update
-	void Start() {
+	private void Start() {
 		Cursor.lockState = CursorLockMode.Locked;
 		Cursor.visible = false;
 	}
 
 	// Update is called once per frame
-	void Update() {
+	private void Update() {
 		PlayerInput();
 	}
 
@@ -38,7 +38,7 @@ public class CameraController : MonoBehaviour {
 	/// <summary>
 	/// Collects data on where the mouse is within the screen
 	/// </summary>
-	void PlayerInput() {
+	private void PlayerInput() {
 		mouseX = Input.GetAxisRaw("Mouse X") * mouseSensitivity;
 		mouseY = Input.GetAxisRaw("Mouse Y") * mouseSensitivity;
 	}
@@ -46,9 +46,9 @@ public class CameraController : MonoBehaviour {
 	/// <summary>
 	/// Updates camera rotation dependent on where player mouses the mouse
 	/// </summary>
-	void RotateCamera() {
+	private void RotateCamera() {
 		xRotation -= mouseY;
-		xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+		xRotation = Mathf.Clamp(xRotation, -60f, 60f);
 
 		transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
 		playerBody.Rotate(Vector3.up * mouseX);
