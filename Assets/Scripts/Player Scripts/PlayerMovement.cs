@@ -21,11 +21,9 @@ public class PlayerMovement : MonoBehaviour {
 
 	// Start is called before the first frame update
 	private void Start() {
-		RaycastHit hit;
-
 		// Generates player to be on top of the ground instead of spawning in the sky
-		if (Physics.Raycast(new Vector3(50, 50, 50), Vector3.down, out hit)) {
-			transform.position = hit.point;
+		if (Physics.Raycast(new Vector3(50, 25, 50), Vector3.down, out RaycastHit hit)) {
+			transform.position = new Vector3(hit.point.x, hit.point.y + 1, hit.point.z);
 		}
 	}
 

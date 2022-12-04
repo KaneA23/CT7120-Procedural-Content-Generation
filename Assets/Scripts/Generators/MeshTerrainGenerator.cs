@@ -8,6 +8,8 @@ using UnityEngine.Pool;
 /// Created by: Kane Adams
 /// </summary>
 public class MeshTerrainGenerator : MonoBehaviour {
+	private DDOLManager DDOL;
+
 	private Mesh mesh;
 	private MeshFilter meshFilter;
 
@@ -43,12 +45,19 @@ public class MeshTerrainGenerator : MonoBehaviour {
 	[SerializeField] private int gridX;
 	[SerializeField] private int gridZ;
 
-	[SerializeField] private int currentX;
-	[SerializeField] private int currentZ;
+	private int currentX;
+	private int currentZ;
 
-	[SerializeField] private GameObject player;
+	private int minX;
+	private int minZ;
+	private int maxX;
+	private int maxZ;
+
+	private GameObject player;
 
 	private void Awake() {
+		DDOL = FindObjectOfType<DDOLManager>();
+
 		meshFilter = GetComponent<MeshFilter>();
 
 		player = GameObject.FindGameObjectWithTag("Player");
@@ -77,6 +86,11 @@ public class MeshTerrainGenerator : MonoBehaviour {
 		currentX = 0;
 		currentZ = 0;
 
+		snowColour = DDOL.SnowColour;
+		rockColour = DDOL.StoneColour;
+		grassColour = DDOL.GrassColour;
+		seaColour = DDOL.SeaColour;
+
 		// Generates meshes in 10x10 grid
 		for (int z = -10; z <= 10; z++) {
 			for (int x = -10; x <= 10; x++) {
@@ -84,6 +98,11 @@ public class MeshTerrainGenerator : MonoBehaviour {
 				UpdateMeshes(x, z);
 			}
 		}
+
+		minX = -9;
+		minZ = -9;
+		maxZ = 9;
+		maxX = 9;
 
 		// Generate trees on each mesh and set inactive
 		foreach (GameObject cell in grid) {
@@ -113,25 +132,25 @@ public class MeshTerrainGenerator : MonoBehaviour {
 		//}
 
 		if (player != null) {
-			if (player.transform.position.x < currentX * 100 && currentX > -9) {
+			if (player.transform.position.x < currentX * 100 && currentX > minX) {
 				UpdateInactiveChunks();
 
 				currentX--;
 				UpdateActiveChunks();
 			}
-			if (player.transform.position.x > (currentX + 1) * 100 && currentX < 9) {
+			if (player.transform.position.x > (currentX + 1) * 100 && currentX < maxX) {
 				UpdateInactiveChunks();
 
 				currentX++;
 				UpdateActiveChunks();
 			}
-			if (player.transform.position.z < currentZ * 100 && currentZ > -9) {
+			if (player.transform.position.z < currentZ * 100 && currentZ > minZ) {
 				UpdateInactiveChunks();
 
 				currentZ--;
 				UpdateActiveChunks();
 			}
-			if (player.transform.position.z > (currentZ + 1) * 100 && currentZ < 9) {
+			if (player.transform.position.z > (currentZ + 1) * 100 && currentZ < maxZ) {
 				UpdateInactiveChunks();
 
 				currentZ++;
@@ -260,5 +279,56 @@ public class MeshTerrainGenerator : MonoBehaviour {
 		grid[currentX + gridX + 1, currentZ + gridZ - 1].gameObject.SetActive(true);
 		grid[currentX + gridX + 1, currentZ + gridZ].gameObject.SetActive(true);
 		grid[currentX + gridX + 1, currentZ + gridZ + 1].gameObject.SetActive(true);
+
+		Debug.Log("Current cell: (" + (currentX + gridX) + ", " + (currentZ + gridZ) + ")");
+
+		//if ((currentX + gridX - 2) > 0 && grid[(currentX + gridX - 2), currentZ + gridZ] == null) {
+		//	Debug.Log("Ungenerated cell: (" + (currentX + gridX - 2) + ", " + (currentZ + gridZ) + ")");
+		//
+		//	CreateMeshShapes((currentX - 2), currentZ);
+		//	UpdateMeshes((currentX - 2), currentZ);
+		//
+		//	minX--;
+		//
+		//	//grid[(currentX + gridX - 1), currentZ + gridZ].SetActive(false);
+		//
+		//	Debug.Log("Created new mesh at: (" + (currentX + gridX - 2) + ", " + (currentZ + gridZ) + ")");
+		//}
+		//if ((currentZ + gridZ - 2) > 0 && grid[currentX + gridX, (currentZ + gridZ - 2)] == null) {
+		//	Debug.Log("Ungenerated cell: (" + (currentX + gridX) + ", " + (currentZ + gridZ - 2) + ")");
+		//
+		//	CreateMeshShapes(currentX, (currentZ - 2));
+		//	UpdateMeshes(currentX, (currentZ - 2));
+		//
+		//	minZ--;
+		//
+		//	//grid[currentX + gridX, currentZ + gridZ - 1].SetActive(false);
+		//
+		//	Debug.Log("Created new mesh at: (" + (currentX + gridX) + ", " + (currentZ + gridZ - 2) + ")");
+		//}
+		//if ((currentX + gridX + 2) < ((gridX * 2) - 1) && grid[(currentX + gridX + 2), currentZ + gridZ] == null) {
+		//	Debug.Log("Ungenerated cell: (" + (currentX + gridX + 2) + ", " + (currentZ + gridZ) + ")");
+		//
+		//	CreateMeshShapes((currentX + 2), currentZ);
+		//	UpdateMeshes((currentX + 2), currentZ);
+		//
+		//	maxX++;
+		//
+		//	//grid[(currentX + gridX - 1), currentZ + gridZ].SetActive(false);
+		//
+		//	Debug.Log("Created new mesh at: (" + (currentX + gridX + 2) + ", " + (currentZ + gridZ) + ")");
+		//}
+		//if ((currentZ + gridZ + 2) < ((gridZ * 2) - 1) && grid[currentX + gridX, (currentZ + gridZ + 2)] == null) {
+		//	Debug.Log("Ungenerated cell: (" + (currentX + gridX) + ", " + (currentZ + gridZ + 2) + ")");
+		//
+		//	CreateMeshShapes(currentX, (currentZ + 2));
+		//	UpdateMeshes(currentX, (currentZ + 2));
+		//
+		//	maxZ++;
+		//
+		//	//grid[currentX + gridX, currentZ + gridZ - 1].SetActive(false);
+		//
+		//	Debug.Log("Created new mesh at: (" + (currentX + gridX) + ", " + (currentZ + gridZ + 2) + ")");
+		//}
 	}
 }
