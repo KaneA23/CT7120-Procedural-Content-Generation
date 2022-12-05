@@ -4,7 +4,6 @@ using UnityEngine;
 
 /// <summary>
 /// Controls the position of the player's first person camera.
-/// Created by: Kane Adams
 /// </summary>
 public class CameraController : MonoBehaviour {
 	[Header("Camera Settings")]

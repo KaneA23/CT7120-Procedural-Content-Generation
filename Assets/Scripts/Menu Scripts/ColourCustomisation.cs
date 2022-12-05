@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 /// <summary>
 /// Controls the customisation of the terrain colours.
-/// Created by: Kane Adams
 /// </summary>
 public class ColourCustomisation : MonoBehaviour {
 	private DDOLManager DDOL;

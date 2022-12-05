@@ -5,7 +5,6 @@ using UnityEngine.Pool;
 
 /// <summary>
 /// Controls the creation of a mesh terrain and allows basic alterations (i.e. layer colouring).
-/// Created by: Kane Adams
 /// </summary>
 public class MeshTerrainGenerator : MonoBehaviour {
 	private DDOLManager DDOL;
@@ -86,10 +85,22 @@ public class MeshTerrainGenerator : MonoBehaviour {
 		currentX = 0;
 		currentZ = 0;
 
-		snowColour = DDOL.SnowColour;
-		rockColour = DDOL.StoneColour;
-		grassColour = DDOL.GrassColour;
-		seaColour = DDOL.SeaColour;
+		if (DDOL.IsRandomColours) {
+			snowColour = Random.ColorHSV();
+			rockColour = Random.ColorHSV();
+			grassColour = Random.ColorHSV();
+			seaColour = Random.ColorHSV();
+
+			snowColour.a = 1;
+			rockColour.a = 1;
+			grassColour.a = 1;
+			seaColour.a = 1;
+		} else {
+			snowColour = DDOL.SnowColour;
+			rockColour = DDOL.StoneColour;
+			grassColour = DDOL.GrassColour;
+			seaColour = DDOL.SeaColour;
+		}
 
 		// Generates meshes in 10x10 grid
 		for (int z = -10; z <= 10; z++) {

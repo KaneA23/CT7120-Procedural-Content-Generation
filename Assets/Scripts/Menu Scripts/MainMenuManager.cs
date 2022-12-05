@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 /// <summary>
 /// Controls the main menu screen.
-/// Created by: Kane Adams
 /// </summary>
 public class MainMenuManager : MonoBehaviour {
 	[SerializeField] private GameObject loadScreen;
@@ -40,8 +39,14 @@ public class MainMenuManager : MonoBehaviour {
 		Application.Quit();
 	}
 
+	/// <summary>
+	/// While scene is being loaded, show load screen
+	/// </summary>
+	/// <returns>Enters coroutine every frame until level is loaded</returns>
 	private IEnumerator ShowLoadingProgress() {
 		AsyncOperation loadOperation = SceneManager.LoadSceneAsync(1);
+
+		//loadbar.value = 0;
 
 		while (!loadOperation.isDone) {
 			float progress = Mathf.Clamp01(loadOperation.progress / 0.9f);

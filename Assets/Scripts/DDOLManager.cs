@@ -3,19 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Contains the properties for the new scene's terrain
-/// Created by: Kane Adams
+/// Contains the properties for the new scene's terrain.
 /// </summary>
 public class DDOLManager : MonoBehaviour {
 	DDOLManager instance;
 
+	// Seed variables
 	private string seed;
 	private bool isRandomSeed;
 
+	// Terrain colour variables
 	private Color snowColour;
 	private Color stoneColour;
 	private Color grassColour;
 	private Color seaColour;
+
+	private bool isRandomColours;
 
 	public string Seed {
 		get {
@@ -68,6 +71,15 @@ public class DDOLManager : MonoBehaviour {
 		}
 		set {
 			seaColour = value;
+		}
+	}
+
+	public bool IsRandomColours {
+		get {
+			return isRandomColours;
+		}
+		set {
+			isRandomColours = value;
 		}
 	}
 

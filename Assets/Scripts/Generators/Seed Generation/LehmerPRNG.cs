@@ -2,7 +2,6 @@ using System;
 
 /// <summary>
 /// Uses the Linear Congruential alogithm to generate a pseudorandom number
-/// Created by: Kane Adams
 /// </summary>
 public class LehmerPRNG {
 	private const long m = 8388608;   // Modulus value, 0 < m, currently 2^23 

@@ -2,7 +2,6 @@ using UnityEngine;
 
 /// <summary>
 /// Controls the spawning of trees and other gameobjects within a meshed area.
-/// Created by: Kane Adams
 /// </summary>
 public class TreeSpawner : MonoBehaviour {
 	[SerializeField] private GameObject[] treePrefabs;

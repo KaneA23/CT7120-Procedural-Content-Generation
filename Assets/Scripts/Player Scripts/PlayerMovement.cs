@@ -4,7 +4,6 @@ using UnityEngine;
 
 /// <summary>
 /// Controls the player movement behaviours in a first person character.
-/// Created by: Kane Adams
 /// </summary>
 public class PlayerMovement : MonoBehaviour {
 	private float speed = 10f;

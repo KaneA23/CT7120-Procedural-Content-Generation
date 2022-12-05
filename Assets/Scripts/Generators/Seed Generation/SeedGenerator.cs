@@ -2,7 +2,6 @@ using UnityEngine;
 
 /// <summary>
 /// Creates a seed that allows chosen terrains to be used again.
-/// Created by: Kane Adams
 /// </summary>
 public class SeedGenerator : MonoBehaviour {
 	private LehmerPRNG PRNG;
