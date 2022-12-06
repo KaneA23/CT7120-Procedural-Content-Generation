@@ -26,6 +26,12 @@ public class ColourCustomisation : MonoBehaviour {
 
 	// Start is called before the first frame update
 	void Start() {
+		Debug.Log("random colour: " + DDOL.IsRandomColours.ToString());
+		Debug.Log("random seed: " + DDOL.IsRandomSeed.ToString());
+
+		DDOL.IsRandomColours = false;
+		DDOL.IsRandomSeed = false;
+
 		redSlider.value = chosenColour.r;
 		greenSlider.value = chosenColour.g;
 		blueSlider.value = chosenColour.b;
@@ -95,5 +101,8 @@ public class ColourCustomisation : MonoBehaviour {
 				DDOL.SeaColour = chosenColour;
 				break;
 		}
+
+		Debug.Log("random colour confirmed: " + DDOL.IsRandomColours.ToString());
+		Debug.Log("random seed confirmed: " + DDOL.IsRandomSeed.ToString());
 	}
 }

@@ -129,6 +129,8 @@ public class MeshTerrainGenerator : MonoBehaviour {
 		UpdateActiveChunks();
 
 		RenderSettings.fog = (player != null);
+
+		Destroy(DDOL.gameObject);
 	}
 
 	// Update is called once per frame
