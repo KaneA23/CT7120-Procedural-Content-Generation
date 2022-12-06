@@ -8,8 +8,14 @@ using UnityEngine.UI;
 /// Controls the main menu screen.
 /// </summary>
 public class MainMenuManager : MonoBehaviour {
+	private DDOLManager DDOL;
+
 	[SerializeField] private GameObject loadScreen;
 	//[SerializeField] private Slider loadbar;
+
+	private void Awake() {
+		DDOL = FindObjectOfType<DDOLManager>();
+	}
 
 	// Start is called before the first frame update
 	private void Start() {
@@ -20,6 +26,20 @@ public class MainMenuManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update() {
 
+	}
+
+	/// <summary>
+	/// If Auto play button pressed, a random seed and the default terrain colours are used
+	/// </summary>
+	public void OnAutoPlayPressed() {
+		DDOL.IsRandomSeed = true;
+
+		DDOL.IsRandomColours = false;
+
+		DDOL.SnowColour = Color.white;
+		DDOL.StoneColour = new Color(0.35f, 0.35f, 0.35f);  // Dark Grey
+		DDOL.GrassColour = new Color(0, 0.3f, 0.1f);		// Dark Green
+		DDOL.SeaColour = new Color(0, 0, 0.4f);				// Blue
 	}
 
 	/// <summary>

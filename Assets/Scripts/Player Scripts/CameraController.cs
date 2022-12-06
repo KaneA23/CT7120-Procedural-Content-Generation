@@ -27,11 +27,15 @@ public class CameraController : MonoBehaviour {
 
 	// Update is called once per frame
 	private void Update() {
-		PlayerInput();
+		if (Time.timeScale != 0) {
+			PlayerInput();
+		}
 	}
 
 	private void LateUpdate() {
-		RotateCamera();
+		if (Time.timeScale != 0) {
+			RotateCamera();
+		}
 	}
 
 	/// <summary>

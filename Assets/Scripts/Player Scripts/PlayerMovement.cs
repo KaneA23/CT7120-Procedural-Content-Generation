@@ -28,11 +28,15 @@ public class PlayerMovement : MonoBehaviour {
 
 	// Update is called once per frame
 	private void Update() {
-		PlayerInput();
+		if (Time.timeScale != 0) {
+			PlayerInput();
+		}
 	}
 
 	private void FixedUpdate() {
-		MovePlayer();
+		if (Time.timeScale != 0) {
+			MovePlayer();
+		}
 	}
 
 	/// <summary>

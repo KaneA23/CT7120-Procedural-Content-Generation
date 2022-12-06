@@ -14,9 +14,9 @@ public class DDOLManager : MonoBehaviour {
 
 	// Terrain colour variables
 	private Color snowColour;
-	private Color stoneColour;
-	private Color grassColour;
-	private Color seaColour;
+	private Color stoneColour;  // Dark Grey
+	private Color grassColour;  // Dark Green
+	private Color seaColour;    // Blue
 
 	private bool isRandomColours;
 
