@@ -196,11 +196,11 @@ public class MeshTerrainGenerator : MonoBehaviour {
 
 				vertices[vertexIndex] = new Vector3(x, y * height, z);
 
-				float colourOffset = Random.Range(-0.005f, 0.005f);
+				float colourOffset = Random.Range(-0.01f, 0.01f);
 
 				// Dependent on how tall the mesh is in the y-axis, different colours are applied
 				if (y >= 0.90f) {
-					colours[vertexIndex] = snowColour;
+					colours[vertexIndex] = new Color(snowColour.r + colourOffset, snowColour.g + colourOffset, snowColour.b + colourOffset);
 				} else if (y >= 0.75f) {
 					colours[vertexIndex] = new Color(rockColour.r + colourOffset, rockColour.g + colourOffset, rockColour.b + colourOffset);
 				} else if (y > 0.25f) {
