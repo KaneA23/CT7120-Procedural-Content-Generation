@@ -34,7 +34,7 @@ public class TreeSpawner : MonoBehaviour {
 		for (int i = 0; i < treeAmount; i++) {
 			raycastOrigin = new Vector3(a_worldPos.position.x + Random.Range(0, 100), a_worldPos.position.y + 25, a_worldPos.position.z + Random.Range(0, 100));
 
-			if (Physics.Raycast(raycastOrigin, Vector3.down, out hit, 25, terrainLayer) && hit.point.y > 6 && hit.point.y < 11) {
+			if (Physics.Raycast(raycastOrigin, Vector3.down, out hit, 25, terrainLayer) && hit.point.y > 15 && hit.point.y < 25) {
 				//currentTree = Instantiate(treePrefab);
 				currentTree = Instantiate(treePrefabs[Random.Range(0, treePrefabs.Length)]);
 				currentTree.transform.rotation = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;

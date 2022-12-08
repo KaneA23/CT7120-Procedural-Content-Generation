@@ -189,22 +189,24 @@ public class MeshTerrainGenerator : MonoBehaviour {
 				xCoord = (float)x / xSize * scale;
 				zCoord = (float)z / zSize * scale;
 
-				xCoord += (5 * a_xOffset);
-				zCoord += (5 * a_zOffset);
+				xCoord += (scale * a_xOffset);
+				zCoord += (scale * a_zOffset);
 
 				y = Mathf.PerlinNoise(xCoord + xOffset, zCoord + zOffset);
 
 				vertices[vertexIndex] = new Vector3(x, y * height, z);
 
+				float colourOffset = Random.Range(-0.005f, 0.005f);
+
 				// Dependent on how tall the mesh is in the y-axis, different colours are applied
-				if (y > 0.85f) {
+				if (y >= 0.90f) {
 					colours[vertexIndex] = snowColour;
-				} else if (y > 0.65f) {
-					colours[vertexIndex] = rockColour;
+				} else if (y >= 0.75f) {
+					colours[vertexIndex] = new Color(rockColour.r + colourOffset, rockColour.g + colourOffset, rockColour.b + colourOffset);
 				} else if (y > 0.25f) {
-					colours[vertexIndex] = grassColour; //new Color(grassColour.r, grassColour.g +Random.Range(-0.1f, 0.1f), grassColour.b);
+					colours[vertexIndex] = new Color(grassColour.r, grassColour.g + colourOffset, grassColour.b);
 				} else {
-					colours[vertexIndex] = seaColour;
+					colours[vertexIndex] = new Color(seaColour.r, seaColour.g, seaColour.b + colourOffset);
 				}
 
 				vertexIndex++;
@@ -250,14 +252,22 @@ public class MeshTerrainGenerator : MonoBehaviour {
 		Mesh currentMesh = filter.mesh;
 		currentMesh.Clear();
 
+		Vector2[] uvs = new Vector2[vertices.Length];
+
+		for (int i = 0; i < vertices.Length; i++) {
+			uvs[i] = new Vector2(vertices[i].x, vertices[i].z);
+		}
+
 		currentMesh.vertices = vertices;
 		currentMesh.triangles = triangles;
+		currentMesh.uv = uvs;
 		currentMesh.colors = colours;
 
 		currentMeshColl.sharedMesh = currentMesh;
 
 		currentMesh.RecalculateBounds();
 		currentMesh.RecalculateNormals();
+		currentMesh.RecalculateTangents();
 	}
 
 	/// <summary>

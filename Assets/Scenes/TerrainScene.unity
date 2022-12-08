@@ -1005,8 +1005,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   xSize: 100
   zSize: 100
-  scale: 5
-  height: 20
+  scale: 2
+  height: 50
   xOffset: 0
   zOffset: 0
   useRandomOffsets: 0
