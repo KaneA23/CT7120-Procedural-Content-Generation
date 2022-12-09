@@ -29,12 +29,12 @@ public class TreeSpawner : MonoBehaviour {
 	/// </summary>
 	/// <param name="a_worldPos">Mesh that trees are to be spawned on</param>
 	public void SpawnTrees(Transform a_worldPos) {
-		treeAmount = Random.Range(100, 250);
+		treeAmount = Random.Range(50, 150);
 
 		for (int i = 0; i < treeAmount; i++) {
-			raycastOrigin = new Vector3(a_worldPos.position.x + Random.Range(0, 100), a_worldPos.position.y + 25, a_worldPos.position.z + Random.Range(0, 100));
+			raycastOrigin = new Vector3(a_worldPos.position.x + Random.Range(0, 100), a_worldPos.position.y + 100, a_worldPos.position.z + Random.Range(0, 100));
 
-			if (Physics.Raycast(raycastOrigin, Vector3.down, out hit, 25, terrainLayer) && hit.point.y > 15 && hit.point.y < 25) {
+			if (Physics.Raycast(raycastOrigin, Vector3.down, out hit, 150, terrainLayer) && hit.point.y > 15 && hit.point.y < 35) {
 				//currentTree = Instantiate(treePrefab);
 				currentTree = Instantiate(treePrefabs[Random.Range(0, treePrefabs.Length)]);
 				currentTree.transform.rotation = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
@@ -51,6 +51,12 @@ public class TreeSpawner : MonoBehaviour {
 
 				currentTree.transform.localPosition = new Vector3(raycastOrigin.x - a_worldPos.position.x, treeOffsetY, raycastOrigin.z - a_worldPos.position.z);
 			}
+		}
+	}
+
+	private void OnCollisionEnter(Collision collision) {
+		if (collision.gameObject.CompareTag("Environmental")) {
+			Destroy(gameObject);
 		}
 	}
 }

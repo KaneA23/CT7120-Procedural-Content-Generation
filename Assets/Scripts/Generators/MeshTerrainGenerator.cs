@@ -13,25 +13,24 @@ public class MeshTerrainGenerator : MonoBehaviour {
 	private MeshFilter meshFilter;
 
 	[Header("Mesh dimensions")]
-	[SerializeField] private int xSize;
-	[SerializeField] private int zSize;
-	[SerializeField] private float scale;
-	[SerializeField] private int height;
+	private int xSize = 100;
+	private int zSize = 100;
+	private float scale = 1.5f;
+	private int height = 50;
 
-	// Each chunk is 5x5 in perlin noise offsets and 100x100 in mesh position
+	// Each chunk is scalexscale in perlin noise offsets and XSizexZSize in mesh position
 	[Space(10)]
-	[SerializeField] private float xOffset;
-	[SerializeField] private float zOffset;
-	[SerializeField] private bool useRandomOffsets;
+	private float xOffset;
+	private float zOffset;
 
 	private Vector3[] vertices;
 	private int[] triangles;
 
 	[Header("Terrain Shading")]
-	[SerializeField] private Color snowColour = Color.white;
-	[SerializeField] private Color rockColour = Color.grey;
-	[SerializeField] private Color grassColour = new Color(0, 0.25f, 0.1f); // Dark Green
-	[SerializeField] private Color seaColour = new Color(0, 0, 0.4f);       // Blue
+	private Color snowColour;
+	private Color rockColour;
+	private Color grassColour;
+	private Color seaColour;
 
 	private Color[] colours;
 
@@ -41,8 +40,8 @@ public class MeshTerrainGenerator : MonoBehaviour {
 
 	private GameObject[,] grid;
 
-	[SerializeField] private int gridX;
-	[SerializeField] private int gridZ;
+	private int gridX = 100;
+	private int gridZ = 100;
 
 	private int currentX;
 	private int currentZ;

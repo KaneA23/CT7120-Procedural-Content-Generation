@@ -7,11 +7,9 @@ public class SeedGenerator : MonoBehaviour {
 	private LehmerPRNG PRNG;
 	private DDOLManager DDOL;
 
-	[SerializeField] private string gameSeed = "Default";
-	[SerializeField] private bool useStringSeed;
+	private string gameSeed = "Default";
 
-	[Space(5)]
-	[SerializeField] private bool useRandomSeed;
+	private bool useRandomSeed;
 	private int seed;
 
 	private void Awake() {
@@ -26,8 +24,10 @@ public class SeedGenerator : MonoBehaviour {
 		if (DDOL.Seed == null) {
 			useRandomSeed = true;
 		} else {
-			gameSeed = DDOL.Seed;
-			useRandomSeed = DDOL.IsRandomSeed;
+			if (DDOL.Seed != null) {
+				gameSeed = DDOL.Seed;
+				useRandomSeed = DDOL.IsRandomSeed;
+			}
 		}
 	}
 
@@ -35,17 +35,6 @@ public class SeedGenerator : MonoBehaviour {
 	/// Gives user a seed dependent on input given or by random
 	/// </summary>
 	private void GenerateSeed() {
-		//// Allows the user to write words and numbers as a seed
-		//if (useStringSeed) {
-		//	seed = gameSeed.GetHashCode();
-		//}
-
-		//// If chosen, the Lehmer generator returns a value to be a seed at random
-		//if (useRandomSeed) {
-		//	seed = (int)PRNG.GenerateNumber();
-		//	gameSeed = seed.ToString();
-		//}
-
 		if (useRandomSeed) {
 			seed = (int)PRNG.GenerateNumber();
 			gameSeed = seed.ToString();

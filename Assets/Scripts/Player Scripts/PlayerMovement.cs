@@ -6,10 +6,19 @@ using UnityEngine;
 /// Controls the player movement behaviours in a first person character.
 /// </summary>
 public class PlayerMovement : MonoBehaviour {
-	private float speed = 10f;
+	private float currentSpeed;
+	private readonly float walkSpeed = 7.5f;
+	private readonly float runSpeed = 10f;
+
+	private readonly float jumpForce = 600;
 
 	private float hMovement;
 	private float vMovement;
+
+	private bool isRunning;
+
+	private bool isJumping;
+	private bool isGrounded;
 
 	private Rigidbody rb;
 	private Vector3 moveDir;
@@ -21,7 +30,7 @@ public class PlayerMovement : MonoBehaviour {
 	// Start is called before the first frame update
 	private void Start() {
 		// Generates player to be on top of the ground instead of spawning in the sky
-		if (Physics.Raycast(new Vector3(50, 25, 50), Vector3.down, out RaycastHit hit)) {
+		if (Physics.Raycast(new Vector3(50, 50, 50), Vector3.down, out RaycastHit hit)) {
 			transform.position = new Vector3(hit.point.x, hit.point.y + 1, hit.point.z);
 		}
 	}
@@ -45,6 +54,12 @@ public class PlayerMovement : MonoBehaviour {
 	private void PlayerInput() {
 		hMovement = Input.GetAxisRaw("Horizontal");
 		vMovement = Input.GetAxisRaw("Vertical");
+
+		if (isGrounded && Input.GetKeyDown(KeyCode.Space)) {
+			isJumping = true;
+		}
+
+		isRunning = Input.GetKey(KeyCode.LeftShift);
 	}
 
 	/// <summary>
@@ -53,6 +68,36 @@ public class PlayerMovement : MonoBehaviour {
 	private void MovePlayer() {
 		moveDir = transform.forward * vMovement + transform.right * hMovement;
 
-		rb.velocity = new Vector3(moveDir.x * speed, rb.velocity.y, moveDir.z * speed);
+		// changes movement speed dependent on left shift being pressed
+		if (isRunning && isGrounded) {
+			currentSpeed = runSpeed;
+		} else {
+			currentSpeed = walkSpeed;
+		}
+
+		rb.velocity = new Vector3(moveDir.x * currentSpeed, rb.velocity.y, moveDir.z * currentSpeed);
+
+		// if player is touching the ground and is pressing space, jump
+		if (isJumping && isGrounded) {
+			rb.AddForce(new Vector3(0, jumpForce, 0), ForceMode.Impulse);
+			isGrounded = false;
+		}
+	}
+
+	/// <summary>
+	/// Resets jump when collide with an object
+	/// </summary>
+	/// <param name="collision">Object player collided</param>
+	private void OnCollisionEnter(Collision collision) {
+		isGrounded = true;
+		isJumping = false;
+	}
+
+	/// <summary>
+	/// Prevents jumping mid-air
+	/// </summary>
+	/// <param name="collision">Object player was previously touching</param>
+	private void OnCollisionExit(Collision collision) {
+		isGrounded = false;
 	}
 }

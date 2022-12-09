@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1915035298906423423}
   m_Layer: 0
   m_Name: Tree
-  m_TagString: Untagged
+  m_TagString: Environmental
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -190,7 +190,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2858921460042666331}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 19f7cf3b9c45c7a45beac5899edf9b37, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -287,7 +287,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5977512220763161944}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 19f7cf3b9c45c7a45beac5899edf9b37, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2

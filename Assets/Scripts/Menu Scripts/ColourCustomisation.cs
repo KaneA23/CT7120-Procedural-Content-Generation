@@ -12,11 +12,12 @@ public class ColourCustomisation : MonoBehaviour {
 	[SerializeField] private Image colourPreview;
 
 	[Header("Colour Elements")]
-	[SerializeField] private Color chosenColour;
-
 	[SerializeField] private Slider redSlider;
 	[SerializeField] private Slider greenSlider;
 	[SerializeField] private Slider blueSlider;
+
+	[Space(5)]
+	[SerializeField] private Color chosenColour;
 
 	private Color defaultColour;
 
