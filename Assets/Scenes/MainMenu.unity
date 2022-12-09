@@ -179,10 +179,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   colourPreview: {fileID: 108897330}
-  chosenColour: {r: 0, g: 0.3, b: 0.1, a: 1}
   redSlider: {fileID: 438399409}
   greenSlider: {fileID: 1420671000}
   blueSlider: {fileID: 1607629909}
+  chosenColour: {r: 0, g: 0.3, b: 0.1, a: 1}
 --- !u!114 &4993403
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2655,10 +2655,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   colourPreview: {fileID: 1768551492}
-  chosenColour: {r: 0.35, g: 0.35, b: 0.35, a: 1}
   redSlider: {fileID: 816093932}
   greenSlider: {fileID: 684370774}
   blueSlider: {fileID: 203178576}
+  chosenColour: {r: 0.35, g: 0.35, b: 0.35, a: 1}
 --- !u!114 &566814283
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3383,10 +3383,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   colourPreview: {fileID: 2137750629}
-  chosenColour: {r: 0, g: 0, b: 0.4, a: 1}
   redSlider: {fileID: 1615687083}
   greenSlider: {fileID: 681918370}
   blueSlider: {fileID: 73317231}
+  chosenColour: {r: 0, g: 0, b: 0.4, a: 1}
 --- !u!114 &705543798
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8594,10 +8594,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   colourPreview: {fileID: 1319575130}
-  chosenColour: {r: 1, g: 1, b: 1, a: 1}
   redSlider: {fileID: 1151283046}
   greenSlider: {fileID: 1326488287}
   blueSlider: {fileID: 1959292971}
+  chosenColour: {r: 0.9, g: 0.9, b: 0.9, a: 1}
 --- !u!1 &1854367363
 GameObject:
   m_ObjectHideFlags: 0

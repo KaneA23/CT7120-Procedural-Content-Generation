@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -14,6 +15,20 @@ public class TreeSpawner : MonoBehaviour {
 	private int treeAmount;
 	private float treeOffsetY;
 
+
+	public float radius = 5;
+	public int attemptAmount = 10;
+
+	List<Vector2> points;
+
+	/// <summary>
+	/// Types of objects the player can spawn
+	/// </summary>
+	public enum EnvProp {
+		TREE,
+		ROCK,
+	}
+
 	// Start is called before the first frame update
 	void Start() {
 
@@ -22,6 +37,33 @@ public class TreeSpawner : MonoBehaviour {
 	// Update is called once per frame
 	void Update() {
 
+	}
+
+	public void SpawnObjects(Transform a_worldPos, EnvProp a_objectToSpawn) {
+		radius = Random.Range(10, 15);
+
+		points = PoissonDiscSampler.GeneratePoints(radius, 100, attemptAmount);
+
+		foreach (Vector2 point in points) {
+			raycastOrigin = new Vector3(a_worldPos.position.x + point.x, 100, a_worldPos.position.z + point.y);
+
+			if (Physics.Raycast(raycastOrigin, Vector3.down, out hit) && hit.point.y > 15 && hit.point.y < 35) {
+				currentTree = Instantiate(treePrefabs[(int)a_objectToSpawn]);
+				currentTree.transform.rotation = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
+
+				currentTree.transform.parent = a_worldPos;
+				currentTree.transform.position = hit.point;
+
+				if (currentTree.transform.localScale.y > 1) {
+					treeOffsetY = currentTree.transform.position.y + 1/*+ (currentTree.transform.localScale.y / 2)*/;
+					currentTree.transform.localRotation = Quaternion.Euler(0, currentTree.transform.localRotation.y, 0);
+				} else {
+					treeOffsetY = currentTree.transform.position.y + (currentTree.transform.localScale.y / 2);
+				}
+
+				currentTree.transform.localPosition = new Vector3(raycastOrigin.x - a_worldPos.position.x, treeOffsetY, raycastOrigin.z - a_worldPos.position.z);
+			}
+		}
 	}
 
 	/// <summary>

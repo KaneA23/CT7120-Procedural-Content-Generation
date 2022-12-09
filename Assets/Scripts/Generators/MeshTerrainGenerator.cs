@@ -20,8 +20,8 @@ public class MeshTerrainGenerator : MonoBehaviour {
 
 	// Each chunk is scalexscale in perlin noise offsets and XSizexZSize in mesh position
 	[Space(10)]
-	private float xOffset;
-	private float zOffset;
+	[SerializeField] private float xOffset;
+	[SerializeField] private float zOffset;
 
 	private Vector3[] vertices;
 	private int[] triangles;
@@ -78,8 +78,8 @@ public class MeshTerrainGenerator : MonoBehaviour {
 		mesh = new Mesh();
 		meshFilter.mesh = mesh;
 
-		xOffset = Random.Range(0, 100000);
-		zOffset = Random.Range(0, 100000);
+		xOffset = Random.Range(100, 100000);
+		zOffset = Random.Range(100, 100000);
 
 		currentX = 0;
 		currentZ = 0;
@@ -101,7 +101,7 @@ public class MeshTerrainGenerator : MonoBehaviour {
 			seaColour = DDOL.SeaColour;
 		}
 
-		// Generates meshes in 10x10 grid
+		// Generates meshes in 20x20 grid
 		for (int z = -10; z <= 10; z++) {
 			for (int x = -10; x <= 10; x++) {
 				CreateMeshShapes(x, z);
@@ -120,16 +120,18 @@ public class MeshTerrainGenerator : MonoBehaviour {
 				continue;
 			}
 
-			FindObjectOfType<TreeSpawner>().SpawnTrees(cell.transform);
+			//FindObjectOfType<TreeSpawner>().SpawnTrees(cell.transform);
+			FindObjectOfType<TreeSpawner>().SpawnObjects(cell.transform, TreeSpawner.EnvProp.TREE);
+			FindObjectOfType<TreeSpawner>().SpawnObjects(cell.transform, TreeSpawner.EnvProp.ROCK);
 
-			cell.gameObject.SetActive(false);
+			cell.SetActive(false);
 		}
 
 		UpdateActiveChunks();
 
 		RenderSettings.fog = (player != null);
 
-		Destroy(DDOL.gameObject);
+		Destroy(DDOL.gameObject);	// DDOL not required anymore
 	}
 
 	// Update is called once per frame
@@ -301,8 +303,6 @@ public class MeshTerrainGenerator : MonoBehaviour {
 		grid[currentX + gridX + 1, currentZ + gridZ - 1].gameObject.SetActive(true);
 		grid[currentX + gridX + 1, currentZ + gridZ].gameObject.SetActive(true);
 		grid[currentX + gridX + 1, currentZ + gridZ + 1].gameObject.SetActive(true);
-
-		Debug.Log("Current cell: (" + (currentX + gridX) + ", " + (currentZ + gridZ) + ")");
 
 		//if ((currentX + gridX - 2) > 0 && grid[(currentX + gridX - 2), currentZ + gridZ] == null) {
 		//	Debug.Log("Ungenerated cell: (" + (currentX + gridX - 2) + ", " + (currentZ + gridZ) + ")");

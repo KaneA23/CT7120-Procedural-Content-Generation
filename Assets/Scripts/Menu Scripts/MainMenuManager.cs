@@ -37,10 +37,10 @@ public class MainMenuManager : MonoBehaviour {
 
 		DDOL.IsRandomColours = false;
 
-		DDOL.SnowColour = Color.white;
+		DDOL.SnowColour = new Color(0.85f, 0.85f, 0.85f);   // White
 		DDOL.StoneColour = new Color(0.35f, 0.35f, 0.35f);  // Dark Grey
-		DDOL.GrassColour = new Color(0, 0.3f, 0.1f);		// Dark Green
-		DDOL.SeaColour = new Color(0, 0, 0.4f);				// Blue
+		DDOL.GrassColour = new Color(0, 0.3f, 0.1f);        // Dark Green
+		DDOL.SeaColour = new Color(0, 0, 0.4f);             // Blue
 	}
 
 	/// <summary>
