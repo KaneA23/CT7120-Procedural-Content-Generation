@@ -20,14 +20,16 @@ public class SeedGenerator : MonoBehaviour {
 		GenerateSeed();
 	}
 
+	/// <summary>
+	/// Assigns local variables to values collected through player choice in Main Menu Scene
+	/// </summary>
 	private void GetMenuValues() {
 		if (DDOL.Seed == null) {
 			useRandomSeed = true;
 		} else {
-			if (DDOL.Seed != null) {
-				gameSeed = DDOL.Seed;
-				useRandomSeed = DDOL.IsRandomSeed;
-			}
+			gameSeed = DDOL.Seed;
+			useRandomSeed = DDOL.IsRandomSeed;
+
 		}
 	}
 

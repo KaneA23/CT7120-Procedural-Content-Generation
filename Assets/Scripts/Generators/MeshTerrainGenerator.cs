@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Pool;
+//using UnityEngine.Pool;
 
 /// <summary>
 /// Controls the creation of a mesh terrain and allows basic alterations (i.e. layer colouring).
@@ -36,7 +36,7 @@ public class MeshTerrainGenerator : MonoBehaviour {
 
 	[SerializeField] private MeshFilter chunkPrefab;
 
-	private ObjectPool<MeshFilter> meshPool;
+	//private ObjectPool<MeshFilter> meshPool;
 
 	private GameObject[,] grid;
 
@@ -63,15 +63,15 @@ public class MeshTerrainGenerator : MonoBehaviour {
 
 	// Start is called before the first frame update
 	private void Start() {
-		meshPool = new ObjectPool<MeshFilter>(() => {
-			return Instantiate(chunkPrefab);
-		}, meshObj => {
-			meshObj.gameObject.SetActive(true);
-		}, meshObj => {
-			meshObj.gameObject.SetActive(false);
-		}, meshObj => {
-			Destroy(meshObj.gameObject);
-		}, false, 9, 100);
+		//meshPool = new ObjectPool<MeshFilter>(() => {
+		//	return Instantiate(chunkPrefab);
+		//}, meshObj => {
+		//	meshObj.gameObject.SetActive(true);
+		//}, meshObj => {
+		//	meshObj.gameObject.SetActive(false);
+		//}, meshObj => {
+		//	Destroy(meshObj.gameObject);
+		//}, false, 9, 100);
 
 		grid = new GameObject[gridX * 2, gridZ * 2];
 
@@ -120,7 +120,6 @@ public class MeshTerrainGenerator : MonoBehaviour {
 				continue;
 			}
 
-			//FindObjectOfType<TreeSpawner>().SpawnTrees(cell.transform);
 			FindObjectOfType<TreeSpawner>().SpawnObjects(cell.transform, TreeSpawner.EnvProp.TREE);
 			FindObjectOfType<TreeSpawner>().SpawnObjects(cell.transform, TreeSpawner.EnvProp.ROCK);
 
@@ -241,7 +240,8 @@ public class MeshTerrainGenerator : MonoBehaviour {
 	/// Adds all calculated triangles to the mesh
 	/// </summary>
 	private void UpdateMeshes(int a_xPos, int a_zPos) {
-		MeshFilter filter = meshPool.Get();
+		//MeshFilter filter = meshPool.Get();
+		MeshFilter filter = Instantiate(chunkPrefab);
 		filter.gameObject.transform.position = new Vector3(a_xPos * xSize, 0, a_zPos * zSize);
 		filter.gameObject.transform.parent = GameObject.Find("Terrain").transform;
 		filter.gameObject.layer = LayerMask.NameToLayer("Terrain"); ;

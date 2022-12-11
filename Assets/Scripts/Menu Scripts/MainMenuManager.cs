@@ -25,8 +25,7 @@ public class MainMenuManager : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update() {
-		Debug.Log("random colour currently: " + DDOL.IsRandomColours.ToString());
-		Debug.Log("random seed currently: " + DDOL.IsRandomSeed.ToString());
+
 	}
 
 	/// <summary>
@@ -73,7 +72,6 @@ public class MainMenuManager : MonoBehaviour {
 			float progress = Mathf.Clamp01(loadOperation.progress / 0.9f);
 
 			//loadbar.value = progress;
-			Debug.Log(progress);
 
 			yield return null;
 		}

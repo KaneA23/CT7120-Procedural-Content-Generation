@@ -109,6 +109,5 @@ public class DDOLManager : MonoBehaviour {
 	/// <param name="a_userSeed">User's input</param>
 	public void SetSeed(string a_userSeed) {
 		seed = a_userSeed;
-		Debug.Log(seed);
 	}
 }

@@ -6,11 +6,12 @@ using UnityEngine;
 /// Controls the position of the player's first person camera.
 /// </summary>
 public class CameraController : MonoBehaviour {
-	[Header("Camera Settings")]
 	private float mouseSensitivity = 10f;
 
+	// Mouse movement
 	private float mouseX;
 	private float mouseY;
+
 	private float xRotation = 0f;
 
 	private Transform playerBody;
