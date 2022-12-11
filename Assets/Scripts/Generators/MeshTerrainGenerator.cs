@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TreeEditor;
 using UnityEngine;
 //using UnityEngine.Pool;
 
@@ -13,9 +14,9 @@ public class MeshTerrainGenerator : MonoBehaviour {
 	private MeshFilter meshFilter;
 
 	[Header("Mesh dimensions")]
-	private int xSize = 100;
-	private int zSize = 100;
-	private float scale = 1.5f;
+	[SerializeField] private int xSize = 100;
+	[SerializeField] private int zSize = 100;
+	private float scale = 1;
 	private int height = 50;
 
 	// Each chunk is scalexscale in perlin noise offsets and XSizexZSize in mesh position
@@ -52,6 +53,10 @@ public class MeshTerrainGenerator : MonoBehaviour {
 	private int maxZ;
 
 	private GameObject player;
+
+	public int octaves;
+	public float persistance;
+	public float lacunarity;
 
 	private void Awake() {
 		DDOL = FindObjectOfType<DDOLManager>();
@@ -130,7 +135,11 @@ public class MeshTerrainGenerator : MonoBehaviour {
 
 		RenderSettings.fog = (player != null);
 
-		Destroy(DDOL.gameObject);	// DDOL not required anymore
+		//CreateMeshShapes(0, 0);
+		//UpdateMeshes(0, 0);
+
+
+		Destroy(DDOL.gameObject);   // DDOL not required anymore
 	}
 
 	// Update is called once per frame
@@ -179,31 +188,64 @@ public class MeshTerrainGenerator : MonoBehaviour {
 		vertices = new Vector3[(xSize + 1) * (zSize + 1)];
 		colours = new Color[vertices.Length];
 
+		float[,] noiseMap = new float[xSize + 1, zSize + 1];
+
 		// Uses perlin noise to get the height of the terrain based on the x and z axis + offset
 		int vertexIndex = 0;
 		float xCoord;
 		float zCoord;
 		float y;
+
+		float maxNoiseHeight = float.MinValue;
+		float minNoiseHeight = float.MaxValue;
+
 		for (int z = 0; z <= zSize; z++) {
 			for (int x = 0; x <= xSize; x++) {
-				xCoord = (float)x / xSize * scale;
-				zCoord = (float)z / zSize * scale;
 
-				xCoord += (scale * a_xOffset);
-				zCoord += (scale * a_zOffset);
+				float amplitude = 1;
+				float frequency = 1;
+				float noiseHeight = 0;
 
-				y = Mathf.PerlinNoise(xCoord + xOffset, zCoord + zOffset);
+				for (int i = 0; i < octaves; i++) {
+					xCoord = (float)x / xSize * scale * frequency;
+					zCoord = (float)z / zSize * scale * frequency;
 
-				vertices[vertexIndex] = new Vector3(x, y * height, z);
+					xCoord += xOffset;
+					zCoord += zOffset;
+
+					float perlinValue = Mathf.PerlinNoise(xCoord + (a_xOffset * xSize), zCoord + (a_zOffset * zSize)) * 2 - 1;
+					noiseHeight += perlinValue * amplitude;
+
+					amplitude *= persistance;
+					frequency *= lacunarity;
+					//y = Mathf.PerlinNoise(xCoord + xOffset, zCoord + zOffset);
+				}
+
+				if (noiseHeight > maxNoiseHeight) {
+					maxNoiseHeight = noiseHeight;
+				} else if (noiseHeight < minNoiseHeight) {
+					minNoiseHeight = noiseHeight;
+				}
+
+				noiseMap[x, z] = noiseHeight;
+
+			}
+		}
+
+		for (int z = 0; z <= zSize; z++) {
+			for (int x = 0; x <= xSize; x++) {
+				noiseMap[x, z] = Mathf.InverseLerp(minNoiseHeight, maxNoiseHeight, noiseMap[x, z]);
+
+				vertices[vertexIndex] = new Vector3(x, noiseMap[x, z] * height, z);
 
 				float colourOffset = Random.Range(-0.01f, 0.01f);
 
 				// Dependent on how tall the mesh is in the y-axis, different colours are applied
-				if (y >= 0.90f) {
+				if (noiseMap[x, z] >= 0.90f) {
 					colours[vertexIndex] = new Color(snowColour.r + colourOffset, snowColour.g + colourOffset, snowColour.b + colourOffset);
-				} else if (y >= 0.75f) {
+				} else if (noiseMap[x, z] >= 0.75f) {
 					colours[vertexIndex] = new Color(rockColour.r + colourOffset, rockColour.g + colourOffset, rockColour.b + colourOffset);
-				} else if (y > 0.25f) {
+				} else if (noiseMap[x, z] > 0.25f) {
 					colours[vertexIndex] = new Color(grassColour.r, grassColour.g + colourOffset, grassColour.b);
 				} else {
 					colours[vertexIndex] = new Color(seaColour.r, seaColour.g, seaColour.b + colourOffset);
@@ -212,6 +254,9 @@ public class MeshTerrainGenerator : MonoBehaviour {
 				vertexIndex++;
 			}
 		}
+
+
+
 
 		// Generates 2 triangles between 4 vertices to create quads
 		triangles = new int[xSize * zSize * 6];

@@ -996,9 +996,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e8049c336b36ec4dad75b7b24bc33f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  xSize: 100
+  zSize: 100
   xOffset: 0
   zOffset: 0
   chunkPrefab: {fileID: 2568003837509934665, guid: 3a7033619a795704d98d5a51a28184f8, type: 3}
+  octaves: 4
+  persistance: 0.5
+  lacunarity: 2
 --- !u!23 &1094039835
 MeshRenderer:
   m_ObjectHideFlags: 0
