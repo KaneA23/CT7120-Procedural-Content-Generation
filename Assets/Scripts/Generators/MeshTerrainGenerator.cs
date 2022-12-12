@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using TreeEditor;
 using UnityEngine;
 //using UnityEngine.Pool;
 
@@ -184,7 +183,7 @@ public class MeshTerrainGenerator : MonoBehaviour {
 	/// <summary>
 	/// Creates quad that allows change within y-axis to create different sea levels as well as allowing different colour layers
 	/// </summary>
-	void CreateMeshShapes(int a_xOffset, int a_zOffset) {
+	void CreateMeshShapes(int a_chunkX, int a_chunkZ) {
 		vertices = new Vector3[(xSize + 1) * (zSize + 1)];
 		colours = new Color[vertices.Length];
 
@@ -199,6 +198,13 @@ public class MeshTerrainGenerator : MonoBehaviour {
 		float maxNoiseHeight = float.MinValue;
 		float minNoiseHeight = float.MaxValue;
 
+		Vector2[] octavesOffset = new Vector2[octaves];
+		for (int i = 0; i < octaves; i++) {
+			float offset_X = Random.Range(-100000, 100000) + a_chunkX;
+			float offset_z = Random.Range(-100000, 100000) + a_chunkZ;
+			octavesOffset[i] = new Vector2(offset_X /*/ xSize*/, offset_z /*/ zSize*/);
+		}
+
 		for (int z = 0; z <= zSize; z++) {
 			for (int x = 0; x <= xSize; x++) {
 
@@ -207,13 +213,13 @@ public class MeshTerrainGenerator : MonoBehaviour {
 				float noiseHeight = 0;
 
 				for (int i = 0; i < octaves; i++) {
-					xCoord = (float)x / xSize * scale * frequency;
-					zCoord = (float)z / zSize * scale * frequency;
+					xCoord = (float)x / xSize * scale * frequency /*+ octavesOffset[i].x * frequency*/;
+					zCoord = (float)z / zSize * scale * frequency /*+ octavesOffset[i].y * frequency*/;
 
-					xCoord += xOffset;
-					zCoord += zOffset;
+					xCoord += xOffset * frequency;
+					zCoord += zOffset * frequency;
 
-					float perlinValue = Mathf.PerlinNoise(xCoord + (a_xOffset * xSize), zCoord + (a_zOffset * zSize)) * 2 - 1;
+					float perlinValue = Mathf.PerlinNoise(xCoord + (a_chunkX * frequency), zCoord + (a_chunkZ * frequency)) * 2 - 1;
 					noiseHeight += perlinValue * amplitude;
 
 					amplitude *= persistance;
@@ -254,9 +260,6 @@ public class MeshTerrainGenerator : MonoBehaviour {
 				vertexIndex++;
 			}
 		}
-
-
-
 
 		// Generates 2 triangles between 4 vertices to create quads
 		triangles = new int[xSize * zSize * 6];
