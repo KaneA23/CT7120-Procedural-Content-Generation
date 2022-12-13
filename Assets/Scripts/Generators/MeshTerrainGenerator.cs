@@ -13,10 +13,10 @@ public class MeshTerrainGenerator : MonoBehaviour {
 	private MeshFilter meshFilter;
 
 	[Header("Mesh dimensions")]
-	[SerializeField] private int xSize = 100;
-	[SerializeField] private int zSize = 100;
-	private float scale = 1;
-	private int height = 50;
+	private int xSize = 1000;
+	private int zSize = 1000;
+	private float scale = 10;
+	private int height = 100;
 
 	// Each chunk is scalexscale in perlin noise offsets and XSizexZSize in mesh position
 	[Space(10)]
@@ -40,8 +40,8 @@ public class MeshTerrainGenerator : MonoBehaviour {
 
 	private GameObject[,] grid;
 
-	private int gridX = 100;
-	private int gridZ = 100;
+	private int gridX = 11;
+	private int gridZ = 11;
 
 	private int currentX;
 	private int currentZ;
@@ -56,6 +56,7 @@ public class MeshTerrainGenerator : MonoBehaviour {
 	public int octaves;
 	public float persistance;
 	public float lacunarity;
+	static Vector2[] octavesOffset;
 
 	private void Awake() {
 		DDOL = FindObjectOfType<DDOLManager>();
@@ -76,14 +77,22 @@ public class MeshTerrainGenerator : MonoBehaviour {
 		//}, meshObj => {
 		//	Destroy(meshObj.gameObject);
 		//}, false, 9, 100);
+		if (octavesOffset == null) {
+			octavesOffset = new Vector2[octaves];
+			for (int i = 0; i < octaves; i++) {
+				float offset_X = Random.Range(-100000, 100000);
+				float offset_z = Random.Range(-100000, 100000);
+				octavesOffset[i] = new Vector2(offset_X /*/ xSize*/, offset_z /*/ zSize*/);
+			}
+		}
 
 		grid = new GameObject[gridX * 2, gridZ * 2];
 
-		mesh = new Mesh();
-		meshFilter.mesh = mesh;
+		//mesh = new Mesh();
+		//meshFilter.mesh = mesh;
 
-		xOffset = Random.Range(100, 100000);
-		zOffset = Random.Range(100, 100000);
+		//xOffset = Random.Range(100, 100000);
+		//zOffset = Random.Range(100, 100000);
 
 		currentX = 0;
 		currentZ = 0;
@@ -106,37 +115,39 @@ public class MeshTerrainGenerator : MonoBehaviour {
 		}
 
 		// Generates meshes in 20x20 grid
-		for (int z = -10; z <= 10; z++) {
-			for (int x = -10; x <= 10; x++) {
-				CreateMeshShapes(x, z);
-				UpdateMeshes(x, z);
-			}
-		}
+		//for (int z = -10; z <= 10; z++) {
+		//	for (int x = -10; x <= 10; x++) {
+		//		CreateMeshShapes(x, z);
+		//		UpdateMeshes(x, z);
+		//	}
+		//}
+		//
+		//minX = -9;
+		//minZ = -9;
+		//maxZ = 9;
+		//maxX = 9;
+		//
+		//// Generate trees on each mesh and set inactive
+		//foreach (GameObject cell in grid) {
+		//	if (cell == null) {
+		//		continue;
+		//	}
+		//
+		//	FindObjectOfType<TreeSpawner>().SpawnObjects(cell.transform, TreeSpawner.EnvProp.TREE);
+		//	FindObjectOfType<TreeSpawner>().SpawnObjects(cell.transform, TreeSpawner.EnvProp.ROCK);
+		//
+		//	cell.SetActive(false);
+		//}
+		//
+		//UpdateActiveChunks();
 
-		minX = -9;
-		minZ = -9;
-		maxZ = 9;
-		maxX = 9;
 
-		// Generate trees on each mesh and set inactive
-		foreach (GameObject cell in grid) {
-			if (cell == null) {
-				continue;
-			}
-
-			FindObjectOfType<TreeSpawner>().SpawnObjects(cell.transform, TreeSpawner.EnvProp.TREE);
-			FindObjectOfType<TreeSpawner>().SpawnObjects(cell.transform, TreeSpawner.EnvProp.ROCK);
-
-			cell.SetActive(false);
-		}
-
-		UpdateActiveChunks();
-
+		CreateMeshShapes(0, 0);
+		UpdateMeshes(0, 0);
+		FindObjectOfType<TreeSpawner>().SpawnObjects(grid[gridX, gridZ].transform, TreeSpawner.EnvProp.TREE);
+		FindObjectOfType<TreeSpawner>().SpawnObjects(grid[gridX, gridZ].transform, TreeSpawner.EnvProp.ROCK);
+		
 		RenderSettings.fog = (player != null);
-
-		//CreateMeshShapes(0, 0);
-		//UpdateMeshes(0, 0);
-
 
 		Destroy(DDOL.gameObject);   // DDOL not required anymore
 	}
@@ -152,32 +163,32 @@ public class MeshTerrainGenerator : MonoBehaviour {
 		//	ResetMeshes();
 		//}
 
-		if (player != null) {
-			if (player.transform.position.x < currentX * 100 && currentX > minX) {
-				UpdateInactiveChunks();
-
-				currentX--;
-				UpdateActiveChunks();
-			}
-			if (player.transform.position.x > (currentX + 1) * 100 && currentX < maxX) {
-				UpdateInactiveChunks();
-
-				currentX++;
-				UpdateActiveChunks();
-			}
-			if (player.transform.position.z < currentZ * 100 && currentZ > minZ) {
-				UpdateInactiveChunks();
-
-				currentZ--;
-				UpdateActiveChunks();
-			}
-			if (player.transform.position.z > (currentZ + 1) * 100 && currentZ < maxZ) {
-				UpdateInactiveChunks();
-
-				currentZ++;
-				UpdateActiveChunks();
-			}
-		}
+		//if (player != null) {
+		//	if (player.transform.position.x < currentX * 100 && currentX > minX) {
+		//		UpdateInactiveChunks();
+		//
+		//		currentX--;
+		//		UpdateActiveChunks();
+		//	}
+		//	if (player.transform.position.x > (currentX + 1) * 100 && currentX < maxX) {
+		//		UpdateInactiveChunks();
+		//
+		//		currentX++;
+		//		UpdateActiveChunks();
+		//	}
+		//	if (player.transform.position.z < currentZ * 100 && currentZ > minZ) {
+		//		UpdateInactiveChunks();
+		//
+		//		currentZ--;
+		//		UpdateActiveChunks();
+		//	}
+		//	if (player.transform.position.z > (currentZ + 1) * 100 && currentZ < maxZ) {
+		//		UpdateInactiveChunks();
+		//
+		//		currentZ++;
+		//		UpdateActiveChunks();
+		//	}
+		//}
 	}
 
 	/// <summary>
@@ -198,12 +209,7 @@ public class MeshTerrainGenerator : MonoBehaviour {
 		float maxNoiseHeight = float.MinValue;
 		float minNoiseHeight = float.MaxValue;
 
-		Vector2[] octavesOffset = new Vector2[octaves];
-		for (int i = 0; i < octaves; i++) {
-			float offset_X = Random.Range(-100000, 100000) + a_chunkX;
-			float offset_z = Random.Range(-100000, 100000) + a_chunkZ;
-			octavesOffset[i] = new Vector2(offset_X /*/ xSize*/, offset_z /*/ zSize*/);
-		}
+
 
 		for (int z = 0; z <= zSize; z++) {
 			for (int x = 0; x <= xSize; x++) {
@@ -213,13 +219,16 @@ public class MeshTerrainGenerator : MonoBehaviour {
 				float noiseHeight = 0;
 
 				for (int i = 0; i < octaves; i++) {
-					xCoord = (float)x / xSize * scale * frequency /*+ octavesOffset[i].x * frequency*/;
-					zCoord = (float)z / zSize * scale * frequency /*+ octavesOffset[i].y * frequency*/;
+					xCoord = (float)x / xSize * scale;
+					zCoord = (float)z / zSize * scale;
 
-					xCoord += xOffset * frequency;
-					zCoord += zOffset * frequency;
+					xCoord = xCoord * frequency + octavesOffset[i].x;
+					zCoord = zCoord * frequency + octavesOffset[i].y;
 
-					float perlinValue = Mathf.PerlinNoise(xCoord + (a_chunkX * frequency), zCoord + (a_chunkZ * frequency)) * 2 - 1;
+					//xCoord += xOffset * frequency;
+					//zCoord += zOffset * frequency;
+
+					float perlinValue = Mathf.PerlinNoise(xCoord + (a_chunkX), zCoord + (a_chunkZ)) * 2 - 1;
 					noiseHeight += perlinValue * amplitude;
 
 					amplitude *= persistance;
@@ -247,11 +256,11 @@ public class MeshTerrainGenerator : MonoBehaviour {
 				float colourOffset = Random.Range(-0.01f, 0.01f);
 
 				// Dependent on how tall the mesh is in the y-axis, different colours are applied
-				if (noiseMap[x, z] >= 0.90f) {
+				if (noiseMap[x, z] >= 0.85f) {
 					colours[vertexIndex] = new Color(snowColour.r + colourOffset, snowColour.g + colourOffset, snowColour.b + colourOffset);
-				} else if (noiseMap[x, z] >= 0.75f) {
+				} else if (noiseMap[x, z] >= 0.65f) {
 					colours[vertexIndex] = new Color(rockColour.r + colourOffset, rockColour.g + colourOffset, rockColour.b + colourOffset);
-				} else if (noiseMap[x, z] > 0.25f) {
+				} else if (noiseMap[x, z] > 0.3f) {
 					colours[vertexIndex] = new Color(grassColour.r, grassColour.g + colourOffset, grassColour.b);
 				} else {
 					colours[vertexIndex] = new Color(seaColour.r, seaColour.g, seaColour.b + colourOffset);
@@ -300,6 +309,7 @@ public class MeshTerrainGenerator : MonoBehaviour {
 
 		Mesh currentMesh = filter.mesh;
 		currentMesh.Clear();
+		currentMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
 
 		Vector2[] uvs = new Vector2[vertices.Length];
 

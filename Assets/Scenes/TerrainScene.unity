@@ -903,8 +903,8 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 250
-  field of view: 88.49475
+  far clip plane: 500
+  field of view: 88.47549
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -996,8 +996,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e8049c336b36ec4dad75b7b24bc33f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  xSize: 100
-  zSize: 100
   xOffset: 0
   zOffset: 0
   chunkPrefab: {fileID: 2568003837509934665, guid: 3a7033619a795704d98d5a51a28184f8, type: 3}
