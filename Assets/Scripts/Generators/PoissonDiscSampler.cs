@@ -91,10 +91,10 @@ public static class PoissonDiscSampler {
 				for (int y = startY; y <= endY; y++) {
 					pointIndex = a_grid[x, y] - 1;
 					if (pointIndex != -1) {
-						float distance = (a_point - a_createdPoints[pointIndex]).magnitude;
+						float distance = (a_point - a_createdPoints[pointIndex]).sqrMagnitude;
 
 						// If too close to another point, can't place point
-						if (distance < a_radius) {
+						if (distance < a_radius * a_radius) {
 							return false;
 						}
 					}
@@ -104,6 +104,6 @@ public static class PoissonDiscSampler {
 			return true;
 		}
 
-		return false;	// if outside mesh boundaries, can't place point
+		return false;   // if outside mesh boundaries, can't place point
 	}
 }

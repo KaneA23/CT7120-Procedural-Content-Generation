@@ -7,7 +7,7 @@ using UnityEngine;
 public class TreeSpawner : MonoBehaviour {
 	[SerializeField] private GameObject[] treePrefabs;
 
-	private GameObject currentTree;
+	private Transform currentObject;
 	private RaycastHit hit;
 	private Vector3 raycastOrigin;
 
@@ -42,7 +42,7 @@ public class TreeSpawner : MonoBehaviour {
 	/// <param name="a_worldPos">Mesh that trees are to be spawned on</param>
 	/// <param name="a_objectToSpawn">What environment item is trying to be spawned</param>
 	public void SpawnObjects(Transform a_worldPos, EnvProp a_objectToSpawn, float a_minObjectPlacement, float a_maxObjectPlacement) {
-		radius = Random.Range(10, 15);
+		radius = Random.Range(10, 20);
 
 		points = PoissonDiscSampler.GeneratePoints(radius, 100, attemptAmount);
 
@@ -50,20 +50,20 @@ public class TreeSpawner : MonoBehaviour {
 			raycastOrigin = new Vector3(a_worldPos.position.x + point.x, 100, a_worldPos.position.z + point.y);
 
 			if (Physics.Raycast(raycastOrigin, Vector3.down, out hit) && hit.point.y > a_minObjectPlacement && hit.point.y < a_maxObjectPlacement) {
-				currentTree = Instantiate(treePrefabs[(int)a_objectToSpawn]);
-				currentTree.transform.rotation = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
+				currentObject = Instantiate(treePrefabs[(int)a_objectToSpawn]).transform;
+				currentObject.rotation = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
 
-				currentTree.transform.parent = a_worldPos;
-				currentTree.transform.position = hit.point;
+				currentObject.parent = a_worldPos;
+				currentObject.position = hit.point;
 
-				if (currentTree.transform.localScale.y > 1) {
-					treeOffsetY = currentTree.transform.position.y + 1/*+ (currentTree.transform.localScale.y / 2)*/;
-					currentTree.transform.localRotation = Quaternion.Euler(0, currentTree.transform.localRotation.y, 0);
+				if (currentObject.localScale.y > 1) {
+					treeOffsetY = currentObject.position.y + 1/*+ (currentTree.transform.localScale.y / 2)*/;
+					currentObject.localRotation = Quaternion.Euler(0, currentObject.localRotation.y, 0);
 				} else {
-					treeOffsetY = currentTree.transform.position.y + (currentTree.transform.localScale.y / 2);
+					treeOffsetY = currentObject.position.y + (currentObject.localScale.y / 2);
 				}
 
-				currentTree.transform.localPosition = new Vector3(raycastOrigin.x - a_worldPos.position.x, treeOffsetY, raycastOrigin.z - a_worldPos.position.z);
+				currentObject.localPosition = new Vector3(raycastOrigin.x - a_worldPos.position.x, treeOffsetY, raycastOrigin.z - a_worldPos.position.z);
 			}
 		}
 	}

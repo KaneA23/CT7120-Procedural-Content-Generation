@@ -9,19 +9,16 @@ using UnityEngine;
 public class MeshTerrainGenerator : MonoBehaviour {
 	private DDOLManager DDOL;
 
-	private Mesh mesh;
-	private MeshFilter meshFilter;
-
 	[Header("Mesh dimensions")]
-	[SerializeField] private int xSize = 100;
-	[SerializeField] private int zSize = 100;
+	private int xSize = 100;
+	private int zSize = 100;
 	private float scale = 2f;
 	private int height = 85;
 
 	// Each chunk is scalexscale in perlin noise offsets and XSizexZSize in mesh position
 	[Space(10)]
-	[SerializeField] private float xOffset;
-	[SerializeField] private float zOffset;
+	private float xOffset;
+	private float zOffset;
 
 	private Vector3[] vertices;
 	private int[] triangles;
@@ -40,8 +37,8 @@ public class MeshTerrainGenerator : MonoBehaviour {
 
 	private GameObject[,] grid;
 
-	private int gridX = 100;
-	private int gridZ = 100;
+	private int gridX = 11;
+	private int gridZ = 11;
 
 	private int currentX;
 	private int currentZ;
@@ -60,8 +57,6 @@ public class MeshTerrainGenerator : MonoBehaviour {
 	private void Awake() {
 		DDOL = FindObjectOfType<DDOLManager>();
 
-		meshFilter = GetComponent<MeshFilter>();
-
 		player = GameObject.FindGameObjectWithTag("Player");
 	}
 
@@ -79,11 +74,8 @@ public class MeshTerrainGenerator : MonoBehaviour {
 
 		grid = new GameObject[gridX * 2, gridZ * 2];
 
-		mesh = new Mesh();
-		meshFilter.mesh = mesh;
-
-		xOffset = Random.Range(100, 100000);
-		zOffset = Random.Range(100, 100000);
+		xOffset = Random.Range(0, 100000);
+		zOffset = Random.Range(0, 100000);
 
 		currentX = 0;
 		currentZ = 0;
@@ -125,7 +117,7 @@ public class MeshTerrainGenerator : MonoBehaviour {
 			}
 
 			FindObjectOfType<TreeSpawner>().SpawnObjects(cell.transform, TreeSpawner.EnvProp.TREE, 0.32f * height, 0.5f * height);
-			FindObjectOfType<TreeSpawner>().SpawnObjects(cell.transform, TreeSpawner.EnvProp.ROCK, 0.32f * height, 0.6f * height);
+			FindObjectOfType<TreeSpawner>().SpawnObjects(cell.transform, TreeSpawner.EnvProp.ROCK, 0.32f * height, 0.64f * height);
 
 			cell.SetActive(false);
 		}

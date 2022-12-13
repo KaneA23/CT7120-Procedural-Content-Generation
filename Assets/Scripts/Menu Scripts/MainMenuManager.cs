@@ -48,7 +48,9 @@ public class MainMenuManager : MonoBehaviour {
 	public void OnPlayPressed() {
 		loadScreen.SetActive(true);
 
-		StartCoroutine(ShowLoadingProgress());
+		SceneManager.LoadSceneAsync(1);
+
+		//StartCoroutine(ShowLoadingProgress());
 	}
 
 	/// <summary>
@@ -63,17 +65,17 @@ public class MainMenuManager : MonoBehaviour {
 	/// While scene is being loaded, show load screen
 	/// </summary>
 	/// <returns>Enters coroutine every frame until level is loaded</returns>
-	private IEnumerator ShowLoadingProgress() {
-		AsyncOperation loadOperation = SceneManager.LoadSceneAsync(1);
-
-		//loadbar.value = 0;
-
-		while (!loadOperation.isDone) {
-			float progress = Mathf.Clamp01(loadOperation.progress / 0.9f);
-
-			//loadbar.value = progress;
-
-			yield return null;
-		}
-	}
+	//private IEnumerator ShowLoadingProgress() {
+	//	AsyncOperation loadOperation = SceneManager.LoadSceneAsync(1);
+	//
+	//	//loadbar.value = 0;
+	//
+	//	while (!loadOperation.isDone) {
+	//		float progress = Mathf.Clamp01(loadOperation.progress / 0.9f);
+	//
+	//		//loadbar.value = progress;
+	//
+	//		yield return null;
+	//	}
+	//}
 }
