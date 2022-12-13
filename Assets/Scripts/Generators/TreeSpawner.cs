@@ -41,7 +41,7 @@ public class TreeSpawner : MonoBehaviour {
 	/// </summary>
 	/// <param name="a_worldPos">Mesh that trees are to be spawned on</param>
 	/// <param name="a_objectToSpawn">What environment item is trying to be spawned</param>
-	public void SpawnObjects(Transform a_worldPos, EnvProp a_objectToSpawn) {
+	public void SpawnObjects(Transform a_worldPos, EnvProp a_objectToSpawn, float a_minObjectPlacement, float a_maxObjectPlacement) {
 		radius = Random.Range(10, 15);
 
 		points = PoissonDiscSampler.GeneratePoints(radius, 100, attemptAmount);
@@ -49,7 +49,7 @@ public class TreeSpawner : MonoBehaviour {
 		foreach (Vector2 point in points) {
 			raycastOrigin = new Vector3(a_worldPos.position.x + point.x, 100, a_worldPos.position.z + point.y);
 
-			if (Physics.Raycast(raycastOrigin, Vector3.down, out hit) && hit.point.y > 15 && hit.point.y < 35) {
+			if (Physics.Raycast(raycastOrigin, Vector3.down, out hit) && hit.point.y > a_minObjectPlacement && hit.point.y < a_maxObjectPlacement) {
 				currentTree = Instantiate(treePrefabs[(int)a_objectToSpawn]);
 				currentTree.transform.rotation = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
 

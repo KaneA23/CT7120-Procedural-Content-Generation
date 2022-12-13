@@ -30,7 +30,7 @@ public class PlayerMovement : MonoBehaviour {
 	// Start is called before the first frame update
 	private void Start() {
 		// Generates player to be on top of the ground
-		if (Physics.Raycast(new Vector3(50, 50, 50), Vector3.down, out RaycastHit hit)) {
+		if (Physics.Raycast(new Vector3(50, 100, 50), Vector3.down, out RaycastHit hit)) {
 			transform.position = new Vector3(hit.point.x, hit.point.y + 1, hit.point.z);
 		}
 	}

@@ -15,8 +15,8 @@ public class MeshTerrainGenerator : MonoBehaviour {
 	[Header("Mesh dimensions")]
 	[SerializeField] private int xSize = 100;
 	[SerializeField] private int zSize = 100;
-	private float scale = 1;
-	private int height = 50;
+	private float scale = 2f;
+	private int height = 85;
 
 	// Each chunk is scalexscale in perlin noise offsets and XSizexZSize in mesh position
 	[Space(10)]
@@ -124,15 +124,15 @@ public class MeshTerrainGenerator : MonoBehaviour {
 				continue;
 			}
 
-			FindObjectOfType<TreeSpawner>().SpawnObjects(cell.transform, TreeSpawner.EnvProp.TREE);
-			FindObjectOfType<TreeSpawner>().SpawnObjects(cell.transform, TreeSpawner.EnvProp.ROCK);
+			FindObjectOfType<TreeSpawner>().SpawnObjects(cell.transform, TreeSpawner.EnvProp.TREE, 0.32f * height, 0.5f * height);
+			FindObjectOfType<TreeSpawner>().SpawnObjects(cell.transform, TreeSpawner.EnvProp.ROCK, 0.32f * height, 0.6f * height);
 
 			cell.SetActive(false);
 		}
 
 		UpdateActiveChunks();
 
-		RenderSettings.fog = (player != null);
+		//RenderSettings.fog = (player != null);
 
 		//CreateMeshShapes(0, 0);
 		//UpdateMeshes(0, 0);
@@ -198,13 +198,6 @@ public class MeshTerrainGenerator : MonoBehaviour {
 		float maxNoiseHeight = float.MinValue;
 		float minNoiseHeight = float.MaxValue;
 
-		Vector2[] octavesOffset = new Vector2[octaves];
-		for (int i = 0; i < octaves; i++) {
-			float offset_X = Random.Range(-100000, 100000) + a_chunkX;
-			float offset_z = Random.Range(-100000, 100000) + a_chunkZ;
-			octavesOffset[i] = new Vector2(offset_X /*/ xSize*/, offset_z /*/ zSize*/);
-		}
-
 		for (int z = 0; z <= zSize; z++) {
 			for (int x = 0; x <= xSize; x++) {
 
@@ -212,46 +205,57 @@ public class MeshTerrainGenerator : MonoBehaviour {
 				float frequency = 1;
 				float noiseHeight = 0;
 
+				float totalAmplitude = 0;
 				for (int i = 0; i < octaves; i++) {
 					xCoord = (float)x / xSize * scale * frequency /*+ octavesOffset[i].x * frequency*/;
 					zCoord = (float)z / zSize * scale * frequency /*+ octavesOffset[i].y * frequency*/;
 
-					xCoord += xOffset * frequency;
-					zCoord += zOffset * frequency;
+					xCoord += xOffset * scale * frequency;
+					zCoord += zOffset * scale * frequency;
 
-					float perlinValue = Mathf.PerlinNoise(xCoord + (a_chunkX * frequency), zCoord + (a_chunkZ * frequency)) * 2 - 1;
+					float perlinValue = Mathf.PerlinNoise(xCoord + (a_chunkX * scale * frequency), zCoord + (a_chunkZ * scale * frequency));
 					noiseHeight += perlinValue * amplitude;
+
+					totalAmplitude += amplitude;
 
 					amplitude *= persistance;
 					frequency *= lacunarity;
 					//y = Mathf.PerlinNoise(xCoord + xOffset, zCoord + zOffset);
 				}
 
-				if (noiseHeight > maxNoiseHeight) {
-					maxNoiseHeight = noiseHeight;
-				} else if (noiseHeight < minNoiseHeight) {
-					minNoiseHeight = noiseHeight;
-				}
+				noiseHeight = Mathf.InverseLerp(0.0f, totalAmplitude, noiseHeight);
+
+				//if (noiseHeight > maxNoiseHeight) {
+				//	maxNoiseHeight = noiseHeight;
+				//} else if (noiseHeight < minNoiseHeight) {
+				//	minNoiseHeight = noiseHeight;
+				//}
 
 				noiseMap[x, z] = noiseHeight;
 
 			}
 		}
 
+		//foreach (float noise in noiseMap) {
+		//	Debug.Log(a_chunkX + a_chunkZ  + ": " + noise);
+		//}
+
 		for (int z = 0; z <= zSize; z++) {
 			for (int x = 0; x <= xSize; x++) {
-				noiseMap[x, z] = Mathf.InverseLerp(minNoiseHeight, maxNoiseHeight, noiseMap[x, z]);
+				//noiseMap[x, z] = Mathf.InverseLerp(0, totalAmplitude, noiseMap[x, z]);
+				//noiseMap[x, z] *= total;
 
 				vertices[vertexIndex] = new Vector3(x, noiseMap[x, z] * height, z);
+
 
 				float colourOffset = Random.Range(-0.01f, 0.01f);
 
 				// Dependent on how tall the mesh is in the y-axis, different colours are applied
-				if (noiseMap[x, z] >= 0.90f) {
+				if (noiseMap[x, z] >= 0.7f) {
 					colours[vertexIndex] = new Color(snowColour.r + colourOffset, snowColour.g + colourOffset, snowColour.b + colourOffset);
-				} else if (noiseMap[x, z] >= 0.75f) {
+				} else if (noiseMap[x, z] >= 0.6f) {
 					colours[vertexIndex] = new Color(rockColour.r + colourOffset, rockColour.g + colourOffset, rockColour.b + colourOffset);
-				} else if (noiseMap[x, z] > 0.25f) {
+				} else if (noiseMap[x, z] > 0.3f) {
 					colours[vertexIndex] = new Color(grassColour.r, grassColour.g + colourOffset, grassColour.b);
 				} else {
 					colours[vertexIndex] = new Color(seaColour.r, seaColour.g, seaColour.b + colourOffset);
