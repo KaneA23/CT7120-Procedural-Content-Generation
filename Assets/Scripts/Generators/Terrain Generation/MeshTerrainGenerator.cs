@@ -11,6 +11,8 @@ public class MeshTerrainGenerator : MonoBehaviour {
 	private readonly float scale = 2f;
 	private readonly int height = 85;
 
+	float[,] noiseMap;
+
 	private Vector2 offsets;
 
 	private Vector3[] vertices;
@@ -79,7 +81,8 @@ public class MeshTerrainGenerator : MonoBehaviour {
 		// Generates meshes in 20x20 grid
 		for (int z = -10; z <= 10; z++) {
 			for (int x = -10; x <= 10; x++) {
-				CreateMeshShapes(x, z);
+				noiseMap = PerlinNoiseGenerator.GenerateNoise(octaves, persistance, lacunarity, meshSize, scale, offsets, x, z);
+				CreateMeshShapes();
 				UpdateMeshes(x, z);
 			}
 		}
@@ -144,48 +147,11 @@ public class MeshTerrainGenerator : MonoBehaviour {
 	/// <summary>
 	/// Creates quad that allows change within y-axis to create different sea levels as well as allowing different colour layers
 	/// </summary>
-	void CreateMeshShapes(int a_chunkX, int a_chunkZ) {
+	void CreateMeshShapes() {
 		vertices = new Vector3[(meshSize + 1) * (meshSize + 1)];
 		colours = new Color[vertices.Length];
 
-		float[,] noiseMap = new float[meshSize + 1, meshSize + 1];
-
-		// Uses perlin noise to get the height of the terrain based on the x and z axis + offset
 		int vertexIndex = 0;
-		float xCoord;
-		float zCoord;
-
-		for (int z = 0; z <= meshSize; z++) {
-			for (int x = 0; x <= meshSize; x++) {
-
-				float amplitude = 1;
-				float frequency = 1;
-				float noiseHeight = 0;
-				float totalAmplitude = 0;
-				for (int i = 0; i < octaves; i++) {
-					xCoord = (float)x / meshSize * scale * frequency;
-					zCoord = (float)z / meshSize * scale * frequency;
-
-					xCoord += offsets.x * scale * frequency;
-					zCoord += offsets.y * scale * frequency;
-
-					float perlinValue = Mathf.PerlinNoise(xCoord + (a_chunkX * scale * frequency), zCoord + (a_chunkZ * scale * frequency));
-					noiseHeight += perlinValue * amplitude;
-
-					totalAmplitude += amplitude;
-
-					amplitude *= persistance;
-					frequency *= lacunarity;
-				}
-
-				noiseHeight = Mathf.InverseLerp(0.0f, totalAmplitude, noiseHeight);
-
-
-				noiseMap[x, z] = noiseHeight;
-
-			}
-		}
-
 		float colourOffset;
 		for (int z = 0; z <= meshSize; z++) {
 			for (int x = 0; x <= meshSize; x++) {

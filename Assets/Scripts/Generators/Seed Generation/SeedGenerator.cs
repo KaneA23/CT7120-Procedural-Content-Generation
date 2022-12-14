@@ -4,7 +4,6 @@ using UnityEngine;
 /// Creates a seed that allows chosen terrains to be used again.
 /// </summary>
 public class SeedGenerator : MonoBehaviour {
-	private LehmerPRNG PRNG;
 	private DDOLManager DDOL;
 
 	private string gameSeed = "Default";
@@ -13,7 +12,6 @@ public class SeedGenerator : MonoBehaviour {
 	private int seed;
 
 	private void Awake() {
-		PRNG = new LehmerPRNG();
 		DDOL = FindObjectOfType<DDOLManager>();
 
 		GetMenuValues();
@@ -37,7 +35,7 @@ public class SeedGenerator : MonoBehaviour {
 	/// </summary>
 	private void GenerateSeed() {
 		if (useRandomSeed) {
-			seed = (int)PRNG.GenerateNumber();
+			seed = (int)LehmerPRNG.GenerateNumber();
 			gameSeed = seed.ToString();
 		} else {
 			seed = gameSeed.GetHashCode();

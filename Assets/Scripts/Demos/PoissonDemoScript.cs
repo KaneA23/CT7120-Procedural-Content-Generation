@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Controls the spawning of objects in the Poisson Disc Sample demo scene.
+/// </summary>
 public class PoissonDemoScript : MonoBehaviour {
 	[SerializeField] private Transform plane;
 	[SerializeField] private GameObject[] treePrefab;
@@ -21,20 +24,20 @@ public class PoissonDemoScript : MonoBehaviour {
 		StartCoroutine(SpawnObjects());
 	}
 
-	// Update is called once per frame
-	void Update() {
-
-	}
-
+	/// <summary>
+	/// Using Poisson generated points, spawns in creates with minimum distance from each other onto the plane
+	/// </summary>
+	/// <returns>Waits 0.1 seconds before continuing the for loop</returns>
 	IEnumerator SpawnObjects() {
-		radius = Random.Range(7.5f, 10);
+		radius = 10;
 
 		points = PoissonDiscSampler.GeneratePoints(radius, 100, attemptAmount);
 
+		// Checks if each poing can be placed on a terrain then spawns in the object
 		foreach (Vector2 point in points) {
-			Debug.Log("Raycast: " + raycastOrigin.ToString());
-			raycastOrigin = new Vector3(/*plane.position.x + */point.x, 5, /*plane.position.z + */point.y);
+			raycastOrigin = new Vector3(point.x, 5, point.y);
 
+			// Checks whether object can be placed and spawns either tree or rock
 			if (Physics.Raycast(raycastOrigin, Vector3.down, out hit)) {
 				currentObject = Instantiate(treePrefab[Random.Range(0, treePrefab.Length)]).transform;
 				

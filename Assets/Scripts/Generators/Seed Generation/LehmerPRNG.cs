@@ -3,7 +3,7 @@ using System;
 /// <summary>
 /// Uses the Linear Congruential alogithm to generate a pseudorandom number
 /// </summary>
-public class LehmerPRNG {
+public static class LehmerPRNG {
 	private const long m = 8388608;   // Modulus value, 0 < m, currently 2^23 
 	private const long a = 2572421;   // Multiplier, 0 < a < m
 	private const long c = 4278205;   // Increment amount 0 <= c < m
@@ -14,7 +14,7 @@ public class LehmerPRNG {
 	/// <param name="a_minValue">Smallest value wanted, inclusive with default of 0</param>
 	/// <param name="a_maxValue">Largest value, exclusive with default being the max value for int32</param>
 	/// <returns>Pseudoranom value</returns>
-	public float GenerateNumber(int a_maxValue = 2147483647, int a_minValue = 0) {
+	public static float GenerateNumber(int a_maxValue = 2147483647, int a_minValue = 0) {
 		long x = DateTime.Now.Ticks % m;    // Creates a seed based on current date and time
 		long result = 0;
 		long value;
@@ -33,4 +33,3 @@ public class LehmerPRNG {
 		return result;
 	}
 }
-
