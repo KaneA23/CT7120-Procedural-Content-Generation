@@ -29,7 +29,6 @@ public class SeedGenerator : MonoBehaviour {
 		} else {
 			gameSeed = DDOL.Seed;
 			useRandomSeed = DDOL.IsRandomSeed;
-
 		}
 	}
 

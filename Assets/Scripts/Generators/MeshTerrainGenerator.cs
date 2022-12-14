@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-//using UnityEngine.Pool;
 
 /// <summary>
 /// Controls the creation of a mesh terrain and allows basic alterations (i.e. layer colouring).
@@ -10,20 +7,16 @@ public class MeshTerrainGenerator : MonoBehaviour {
 	private DDOLManager DDOL;
 
 	[Header("Mesh dimensions")]
-	private int xSize = 100;
-	private int zSize = 100;
-	private float scale = 2f;
-	private int height = 85;
+	private readonly int meshSize = 100;
+	private readonly float scale = 2f;
+	private readonly int height = 85;
 
-	// Each chunk is scalexscale in perlin noise offsets and XSizexZSize in mesh position
-	[Space(10)]
-	private float xOffset;
-	private float zOffset;
+	private Vector2 offsets;
 
 	private Vector3[] vertices;
 	private int[] triangles;
 
-	[Header("Terrain Shading")]
+	[Header("Terrain Colouring")]
 	private Color snowColour;
 	private Color rockColour;
 	private Color grassColour;
@@ -33,12 +26,9 @@ public class MeshTerrainGenerator : MonoBehaviour {
 
 	[SerializeField] private MeshFilter chunkPrefab;
 
-	//private ObjectPool<MeshFilter> meshPool;
-
 	private GameObject[,] grid;
 
-	private int gridX = 11;
-	private int gridZ = 11;
+	private readonly int gridSize = 11;
 
 	private int currentX;
 	private int currentZ;
@@ -50,9 +40,9 @@ public class MeshTerrainGenerator : MonoBehaviour {
 
 	private GameObject player;
 
-	public int octaves;
-	public float persistance;
-	public float lacunarity;
+	private readonly int octaves = 10;
+	private readonly float persistance = 0.33f;
+	private readonly float lacunarity = 2;
 
 	private void Awake() {
 		DDOL = FindObjectOfType<DDOLManager>();
@@ -62,20 +52,9 @@ public class MeshTerrainGenerator : MonoBehaviour {
 
 	// Start is called before the first frame update
 	private void Start() {
-		//meshPool = new ObjectPool<MeshFilter>(() => {
-		//	return Instantiate(chunkPrefab);
-		//}, meshObj => {
-		//	meshObj.gameObject.SetActive(true);
-		//}, meshObj => {
-		//	meshObj.gameObject.SetActive(false);
-		//}, meshObj => {
-		//	Destroy(meshObj.gameObject);
-		//}, false, 9, 100);
+		grid = new GameObject[gridSize * 2, gridSize * 2];
 
-		grid = new GameObject[gridX * 2, gridZ * 2];
-
-		xOffset = Random.Range(0, 100000);
-		zOffset = Random.Range(0, 100000);
+		offsets = new Vector2(Random.Range(0, 100000), Random.Range(0, 100000));
 
 		currentX = 0;
 		currentZ = 0;
@@ -124,26 +103,16 @@ public class MeshTerrainGenerator : MonoBehaviour {
 
 		UpdateActiveChunks();
 
-		//RenderSettings.fog = (player != null);
-
 		//CreateMeshShapes(0, 0);
 		//UpdateMeshes(0, 0);
 
+		RenderSettings.fog = (player != null);
 
 		Destroy(DDOL.gameObject);   // DDOL not required anymore
 	}
 
 	// Update is called once per frame
 	private void Update() {
-		//if (Input.GetMouseButtonDown(0)) {
-		//	if (useRandomOffsets) {
-		//		xOffset = Random.Range(0, 10000f);
-		//		zOffset = Random.Range(0, 10000f);
-		//	}
-		//	//CreateMeshShape();
-		//	ResetMeshes();
-		//}
-
 		if (player != null) {
 			if (player.transform.position.x < currentX * 100 && currentX > minX) {
 				UpdateInactiveChunks();
@@ -176,34 +145,29 @@ public class MeshTerrainGenerator : MonoBehaviour {
 	/// Creates quad that allows change within y-axis to create different sea levels as well as allowing different colour layers
 	/// </summary>
 	void CreateMeshShapes(int a_chunkX, int a_chunkZ) {
-		vertices = new Vector3[(xSize + 1) * (zSize + 1)];
+		vertices = new Vector3[(meshSize + 1) * (meshSize + 1)];
 		colours = new Color[vertices.Length];
 
-		float[,] noiseMap = new float[xSize + 1, zSize + 1];
+		float[,] noiseMap = new float[meshSize + 1, meshSize + 1];
 
 		// Uses perlin noise to get the height of the terrain based on the x and z axis + offset
 		int vertexIndex = 0;
 		float xCoord;
 		float zCoord;
-		float y;
 
-		float maxNoiseHeight = float.MinValue;
-		float minNoiseHeight = float.MaxValue;
-
-		for (int z = 0; z <= zSize; z++) {
-			for (int x = 0; x <= xSize; x++) {
+		for (int z = 0; z <= meshSize; z++) {
+			for (int x = 0; x <= meshSize; x++) {
 
 				float amplitude = 1;
 				float frequency = 1;
 				float noiseHeight = 0;
-
 				float totalAmplitude = 0;
 				for (int i = 0; i < octaves; i++) {
-					xCoord = (float)x / xSize * scale * frequency /*+ octavesOffset[i].x * frequency*/;
-					zCoord = (float)z / zSize * scale * frequency /*+ octavesOffset[i].y * frequency*/;
+					xCoord = (float)x / meshSize * scale * frequency;
+					zCoord = (float)z / meshSize * scale * frequency;
 
-					xCoord += xOffset * scale * frequency;
-					zCoord += zOffset * scale * frequency;
+					xCoord += offsets.x * scale * frequency;
+					zCoord += offsets.y * scale * frequency;
 
 					float perlinValue = Mathf.PerlinNoise(xCoord + (a_chunkX * scale * frequency), zCoord + (a_chunkZ * scale * frequency));
 					noiseHeight += perlinValue * amplitude;
@@ -212,35 +176,22 @@ public class MeshTerrainGenerator : MonoBehaviour {
 
 					amplitude *= persistance;
 					frequency *= lacunarity;
-					//y = Mathf.PerlinNoise(xCoord + xOffset, zCoord + zOffset);
 				}
 
 				noiseHeight = Mathf.InverseLerp(0.0f, totalAmplitude, noiseHeight);
 
-				//if (noiseHeight > maxNoiseHeight) {
-				//	maxNoiseHeight = noiseHeight;
-				//} else if (noiseHeight < minNoiseHeight) {
-				//	minNoiseHeight = noiseHeight;
-				//}
 
 				noiseMap[x, z] = noiseHeight;
 
 			}
 		}
 
-		//foreach (float noise in noiseMap) {
-		//	Debug.Log(a_chunkX + a_chunkZ  + ": " + noise);
-		//}
-
-		for (int z = 0; z <= zSize; z++) {
-			for (int x = 0; x <= xSize; x++) {
-				//noiseMap[x, z] = Mathf.InverseLerp(0, totalAmplitude, noiseMap[x, z]);
-				//noiseMap[x, z] *= total;
-
+		float colourOffset;
+		for (int z = 0; z <= meshSize; z++) {
+			for (int x = 0; x <= meshSize; x++) {
 				vertices[vertexIndex] = new Vector3(x, noiseMap[x, z] * height, z);
 
-
-				float colourOffset = Random.Range(-0.01f, 0.01f);
+				colourOffset = Random.Range(-0.01f, 0.01f);
 
 				// Dependent on how tall the mesh is in the y-axis, different colours are applied
 				if (noiseMap[x, z] >= 0.7f) {
@@ -258,20 +209,20 @@ public class MeshTerrainGenerator : MonoBehaviour {
 		}
 
 		// Generates 2 triangles between 4 vertices to create quads
-		triangles = new int[xSize * zSize * 6];
+		triangles = new int[meshSize * meshSize * 6];
 		int vert = 0;
 		int tris = 0;
-		for (int z = 0; z < zSize; z++) {
-			for (int x = 0; x < xSize; x++) {
+		for (int z = 0; z < meshSize; z++) {
+			for (int x = 0; x < meshSize; x++) {
 				// Triangle 1
 				triangles[tris + 0] = vert;
-				triangles[tris + 1] = vert + xSize + 1;
+				triangles[tris + 1] = vert + meshSize + 1;
 				triangles[tris + 2] = vert + 1;
 
 				// Triangle 2
 				triangles[tris + 3] = triangles[tris + 2];
 				triangles[tris + 4] = triangles[tris + 1];
-				triangles[tris + 5] = vert + xSize + 2;
+				triangles[tris + 5] = vert + meshSize + 2;
 
 				vert++;
 				tris += 6;
@@ -284,28 +235,27 @@ public class MeshTerrainGenerator : MonoBehaviour {
 	/// Adds all calculated triangles to the mesh
 	/// </summary>
 	private void UpdateMeshes(int a_xPos, int a_zPos) {
-		//MeshFilter filter = meshPool.Get();
 		MeshFilter filter = Instantiate(chunkPrefab);
-		filter.gameObject.transform.position = new Vector3(a_xPos * xSize, 0, a_zPos * zSize);
+		filter.gameObject.transform.position = new Vector3(a_xPos * meshSize, 0, a_zPos * meshSize);
 		filter.gameObject.transform.parent = GameObject.Find("Terrain").transform;
 		filter.gameObject.layer = LayerMask.NameToLayer("Terrain"); ;
 
-		grid[a_xPos + gridX, a_zPos + gridZ] = filter.gameObject;
+		grid[a_xPos + gridSize, a_zPos + gridSize] = filter.gameObject;
 
 		MeshCollider currentMeshColl = filter.GetComponent<MeshCollider>();
 
 		Mesh currentMesh = filter.mesh;
 		currentMesh.Clear();
 
-		Vector2[] uvs = new Vector2[vertices.Length];
-
-		for (int i = 0; i < vertices.Length; i++) {
-			uvs[i] = new Vector2(vertices[i].x, vertices[i].z);
-		}
+		//Vector2[] uvs = new Vector2[vertices.Length];
+		//
+		//for (int i = 0; i < vertices.Length; i++) {
+		//	uvs[i] = new Vector2(vertices[i].x, vertices[i].z);
+		//}
 
 		currentMesh.vertices = vertices;
 		currentMesh.triangles = triangles;
-		currentMesh.uv = uvs;
+		//currentMesh.uv = uvs;
 		currentMesh.colors = colours;
 
 		currentMeshColl.sharedMesh = currentMesh;
@@ -319,82 +269,33 @@ public class MeshTerrainGenerator : MonoBehaviour {
 	/// Sets all meshes as inactive
 	/// </summary>
 	private void UpdateInactiveChunks() {
-		grid[currentX + gridX, currentZ + gridZ - 1].gameObject.SetActive(false);
-		grid[currentX + gridX, currentZ + gridZ].gameObject.SetActive(false);
-		grid[currentX + gridX, currentZ + gridZ + 1].gameObject.SetActive(false);
+		grid[currentX + gridSize, currentZ + gridSize - 1].gameObject.SetActive(false);
+		grid[currentX + gridSize, currentZ + gridSize].gameObject.SetActive(false);
+		grid[currentX + gridSize, currentZ + gridSize + 1].gameObject.SetActive(false);
 
-		grid[currentX + gridX - 1, currentZ + gridZ - 1].gameObject.SetActive(false);
-		grid[currentX + gridX - 1, currentZ + gridZ].gameObject.SetActive(false);
-		grid[currentX + gridX - 1, currentZ + gridZ + 1].gameObject.SetActive(false);
+		grid[currentX + gridSize - 1, currentZ + gridSize - 1].gameObject.SetActive(false);
+		grid[currentX + gridSize - 1, currentZ + gridSize].gameObject.SetActive(false);
+		grid[currentX + gridSize - 1, currentZ + gridSize + 1].gameObject.SetActive(false);
 
-		grid[currentX + gridX + 1, currentZ + gridZ - 1].gameObject.SetActive(false);
-		grid[currentX + gridX + 1, currentZ + gridZ].gameObject.SetActive(false);
-		grid[currentX + gridX + 1, currentZ + gridZ + 1].gameObject.SetActive(false);
+		grid[currentX + gridSize + 1, currentZ + gridSize - 1].gameObject.SetActive(false);
+		grid[currentX + gridSize + 1, currentZ + gridSize].gameObject.SetActive(false);
+		grid[currentX + gridSize + 1, currentZ + gridSize + 1].gameObject.SetActive(false);
 	}
 
 	/// <summary>
 	/// Sets all meshes in a 3x3 grid around player as active
 	/// </summary>
 	private void UpdateActiveChunks() {
-		grid[currentX + gridX, currentZ + gridZ - 1].gameObject.SetActive(true);
-		grid[currentX + gridX, currentZ + gridZ].gameObject.SetActive(true);
-		grid[currentX + gridX, currentZ + gridZ + 1].gameObject.SetActive(true);
+		grid[currentX + gridSize, currentZ + gridSize - 1].gameObject.SetActive(true);
+		grid[currentX + gridSize, currentZ + gridSize].gameObject.SetActive(true);
+		grid[currentX + gridSize, currentZ + gridSize + 1].gameObject.SetActive(true);
 
-		grid[currentX + gridX - 1, currentZ + gridZ - 1].gameObject.SetActive(true);
-		grid[currentX + gridX - 1, currentZ + gridZ].gameObject.SetActive(true);
-		grid[currentX + gridX - 1, currentZ + gridZ + 1].gameObject.SetActive(true);
+		grid[currentX + gridSize - 1, currentZ + gridSize - 1].gameObject.SetActive(true);
+		grid[currentX + gridSize - 1, currentZ + gridSize].gameObject.SetActive(true);
+		grid[currentX + gridSize - 1, currentZ + gridSize + 1].gameObject.SetActive(true);
 
-		grid[currentX + gridX + 1, currentZ + gridZ - 1].gameObject.SetActive(true);
-		grid[currentX + gridX + 1, currentZ + gridZ].gameObject.SetActive(true);
-		grid[currentX + gridX + 1, currentZ + gridZ + 1].gameObject.SetActive(true);
-
-		//if ((currentX + gridX - 2) > 0 && grid[(currentX + gridX - 2), currentZ + gridZ] == null) {
-		//	Debug.Log("Ungenerated cell: (" + (currentX + gridX - 2) + ", " + (currentZ + gridZ) + ")");
-		//
-		//	CreateMeshShapes((currentX - 2), currentZ);
-		//	UpdateMeshes((currentX - 2), currentZ);
-		//
-		//	minX--;
-		//
-		//	//grid[(currentX + gridX - 1), currentZ + gridZ].SetActive(false);
-		//
-		//	Debug.Log("Created new mesh at: (" + (currentX + gridX - 2) + ", " + (currentZ + gridZ) + ")");
-		//}
-		//if ((currentZ + gridZ - 2) > 0 && grid[currentX + gridX, (currentZ + gridZ - 2)] == null) {
-		//	Debug.Log("Ungenerated cell: (" + (currentX + gridX) + ", " + (currentZ + gridZ - 2) + ")");
-		//
-		//	CreateMeshShapes(currentX, (currentZ - 2));
-		//	UpdateMeshes(currentX, (currentZ - 2));
-		//
-		//	minZ--;
-		//
-		//	//grid[currentX + gridX, currentZ + gridZ - 1].SetActive(false);
-		//
-		//	Debug.Log("Created new mesh at: (" + (currentX + gridX) + ", " + (currentZ + gridZ - 2) + ")");
-		//}
-		//if ((currentX + gridX + 2) < ((gridX * 2) - 1) && grid[(currentX + gridX + 2), currentZ + gridZ] == null) {
-		//	Debug.Log("Ungenerated cell: (" + (currentX + gridX + 2) + ", " + (currentZ + gridZ) + ")");
-		//
-		//	CreateMeshShapes((currentX + 2), currentZ);
-		//	UpdateMeshes((currentX + 2), currentZ);
-		//
-		//	maxX++;
-		//
-		//	//grid[(currentX + gridX - 1), currentZ + gridZ].SetActive(false);
-		//
-		//	Debug.Log("Created new mesh at: (" + (currentX + gridX + 2) + ", " + (currentZ + gridZ) + ")");
-		//}
-		//if ((currentZ + gridZ + 2) < ((gridZ * 2) - 1) && grid[currentX + gridX, (currentZ + gridZ + 2)] == null) {
-		//	Debug.Log("Ungenerated cell: (" + (currentX + gridX) + ", " + (currentZ + gridZ + 2) + ")");
-		//
-		//	CreateMeshShapes(currentX, (currentZ + 2));
-		//	UpdateMeshes(currentX, (currentZ + 2));
-		//
-		//	maxZ++;
-		//
-		//	//grid[currentX + gridX, currentZ + gridZ - 1].SetActive(false);
-		//
-		//	Debug.Log("Created new mesh at: (" + (currentX + gridX) + ", " + (currentZ + gridZ + 2) + ")");
-		//}
+		grid[currentX + gridSize + 1, currentZ + gridSize - 1].gameObject.SetActive(true);
+		grid[currentX + gridSize + 1, currentZ + gridSize].gameObject.SetActive(true);
+		grid[currentX + gridSize + 1, currentZ + gridSize + 1].gameObject.SetActive(true);
 	}
 }

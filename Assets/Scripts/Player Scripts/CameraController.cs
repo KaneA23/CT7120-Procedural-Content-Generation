@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -9,8 +7,7 @@ public class CameraController : MonoBehaviour {
 	private float mouseSensitivity = 10f;
 
 	// Mouse movement
-	private float mouseX;
-	private float mouseY;
+	private Vector2 mousePos;
 
 	private float xRotation = 0f;
 
@@ -43,18 +40,18 @@ public class CameraController : MonoBehaviour {
 	/// Collects data on where the mouse is within the screen
 	/// </summary>
 	private void PlayerInput() {
-		mouseX = Input.GetAxisRaw("Mouse X") * mouseSensitivity;
-		mouseY = Input.GetAxisRaw("Mouse Y") * mouseSensitivity;
+		mousePos.x = Input.GetAxisRaw("Mouse X") * mouseSensitivity;
+		mousePos.y = Input.GetAxisRaw("Mouse Y") * mouseSensitivity;
 	}
 
 	/// <summary>
 	/// Updates camera rotation dependent on where player mouses the mouse
 	/// </summary>
 	private void RotateCamera() {
-		xRotation -= mouseY;
+		xRotation -= mousePos.y;
 		xRotation = Mathf.Clamp(xRotation, -60f, 60f);
 
 		transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
-		playerBody.Rotate(Vector3.up * mouseX);
+		playerBody.Rotate(Vector3.up * mousePos.x);
 	}
 }

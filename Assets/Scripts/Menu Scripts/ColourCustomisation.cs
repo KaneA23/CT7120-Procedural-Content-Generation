@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -36,11 +34,6 @@ public class ColourCustomisation : MonoBehaviour {
 
 		colourPreview.color = chosenColour;
 		defaultColour = chosenColour;
-	}
-
-	// Update is called once per frame
-	void Update() {
-
 	}
 
 	/// <summary>

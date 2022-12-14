@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -7,13 +5,9 @@ using UnityEngine.SceneManagement;
 /// Controls when to pause the game and show menu screen dependent on player input.
 /// </summary>
 public class PauseMenuScript : MonoBehaviour {
-	private GameObject pauseScreen;
+	[SerializeField] private GameObject pauseScreen;
 
 	private bool isPaused;
-
-	private void Awake() {
-		pauseScreen = GameObject.Find("PausePanel");
-	}
 
 	// Start is called before the first frame update
 	void Start() {
@@ -41,6 +35,6 @@ public class PauseMenuScript : MonoBehaviour {
 	/// Returns to main menu scene
 	/// </summary>
 	public void OnMenuButtonPressed() {
-		SceneManager.LoadScene(0);
+		SceneManager.LoadSceneAsync(0);
 	}
 }

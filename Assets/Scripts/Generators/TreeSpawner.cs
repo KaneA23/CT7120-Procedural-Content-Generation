@@ -26,16 +26,6 @@ public class TreeSpawner : MonoBehaviour {
 		ROCK,
 	}
 
-	// Start is called before the first frame update
-	void Start() {
-
-	}
-
-	// Update is called once per frame
-	void Update() {
-
-	}
-
 	/// <summary>
 	/// From list of points generated, checks whether object can spawn on created terrain and then spawns it
 	/// </summary>
@@ -57,7 +47,7 @@ public class TreeSpawner : MonoBehaviour {
 				currentObject.position = hit.point;
 
 				if (currentObject.localScale.y > 1) {
-					treeOffsetY = currentObject.position.y + 1/*+ (currentTree.transform.localScale.y / 2)*/;
+					treeOffsetY = currentObject.position.y + 1;
 					currentObject.localRotation = Quaternion.Euler(0, currentObject.localRotation.y, 0);
 				} else {
 					treeOffsetY = currentObject.position.y + (currentObject.localScale.y / 2);

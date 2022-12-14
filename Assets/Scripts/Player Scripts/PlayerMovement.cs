@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -12,8 +10,9 @@ public class PlayerMovement : MonoBehaviour {
 
 	private readonly float jumpForce = 100;
 
-	private float hMovement;
-	private float vMovement;
+	//private float hMovement;
+	//private float vMovement;
+	private Vector2 movement;
 
 	private bool isRunning;
 
@@ -54,8 +53,8 @@ public class PlayerMovement : MonoBehaviour {
 	/// Collects data on what buttons player are pressing
 	/// </summary>
 	private void PlayerInput() {
-		hMovement = Input.GetAxisRaw("Horizontal");
-		vMovement = Input.GetAxisRaw("Vertical");
+		movement.x = Input.GetAxisRaw("Horizontal");
+		movement.y = Input.GetAxisRaw("Vertical");
 
 		if (isGrounded && Input.GetKeyDown(KeyCode.Space)) {
 			isJumping = true;
@@ -72,7 +71,7 @@ public class PlayerMovement : MonoBehaviour {
 	/// Moves player character in a direction dependent on player input
 	/// </summary>
 	private void MovePlayer() {
-		moveDir = transform.forward * vMovement + transform.right * hMovement;
+		moveDir = transform.forward * movement.y + transform.right * movement.x;
 
 		// changes movement speed dependent on left shift being pressed
 		if (isRunning && isGrounded) {
