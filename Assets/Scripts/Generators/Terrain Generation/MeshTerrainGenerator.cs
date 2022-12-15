@@ -160,9 +160,9 @@ public class MeshTerrainGenerator : MonoBehaviour {
 				colourOffset = Random.Range(-0.01f, 0.01f);
 
 				// Dependent on how tall the mesh is in the y-axis, different colours are applied
-				if (noiseMap[x, z] >= 0.7f) {
+				if (noiseMap[x, z] > 0.7f) {
 					colours[vertexIndex] = new Color(snowColour.r + colourOffset, snowColour.g + colourOffset, snowColour.b + colourOffset);
-				} else if (noiseMap[x, z] >= 0.6f) {
+				} else if (noiseMap[x, z] >= 0.5f) {
 					colours[vertexIndex] = new Color(rockColour.r + colourOffset, rockColour.g + colourOffset, rockColour.b + colourOffset);
 				} else if (noiseMap[x, z] > 0.3f) {
 					colours[vertexIndex] = new Color(grassColour.r, grassColour.g + colourOffset, grassColour.b);

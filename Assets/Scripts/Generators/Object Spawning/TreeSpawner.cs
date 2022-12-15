@@ -14,7 +14,7 @@ public class TreeSpawner : MonoBehaviour {
 	private float yOffset;
 
 	private float radius;
-	private readonly int attemptAmount = 10;
+	private readonly int attemptAmount = 30;
 
 	private List<Vector2> points;
 
@@ -46,12 +46,12 @@ public class TreeSpawner : MonoBehaviour {
 				currentObject.parent = a_worldPos;
 				currentObject.position = hit.point;
 
-				//if (currentObject.localScale.y > 1) {
-					//yOffset = currentObject.position.y + 1;
-					//currentObject.localRotation = Quaternion.Euler(0, currentObject.localRotation.y, 0);
-				//} else {
+				if (currentObject.localScale.y > 1) {
+					yOffset = currentObject.position.y + 1;
+					currentObject.localRotation = Quaternion.Euler(0, currentObject.localRotation.y, 0);
+				} else {
 					yOffset = currentObject.position.y + (currentObject.localScale.y / 2);
-				//}
+				}
 
 				currentObject.localPosition = new Vector3(raycastOrigin.x - a_worldPos.position.x, yOffset, raycastOrigin.z - a_worldPos.position.z);
 			}

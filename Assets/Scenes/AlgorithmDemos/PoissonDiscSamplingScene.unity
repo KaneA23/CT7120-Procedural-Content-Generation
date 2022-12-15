@@ -176,7 +176,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c51aaee03667f9c489c80b6db01be3d0, type: 2}
+  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -269,6 +269,7 @@ MonoBehaviour:
   treePrefab:
   - {fileID: 1915035298906423408, guid: c6cc056eb37a3d4448281f3cc04f415a, type: 3}
   - {fileID: 1915035298906423408, guid: 70fc74d606aaeb54085ac6663c5bf569, type: 3}
+  usePoisson: 1
 --- !u!1 &1954907081
 GameObject:
   m_ObjectHideFlags: 0

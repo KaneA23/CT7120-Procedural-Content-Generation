@@ -15,9 +15,11 @@ public class PoissonDemoScript : MonoBehaviour {
 	private Vector3 raycastOrigin;
 
 	private float radius;
-	private readonly int attemptAmount = 10;
+	private readonly int attemptAmount = 30;
 
-	private List<Vector2> points;
+	private List<Vector2> points = new List<Vector2>();
+
+	[SerializeField] private bool usePoisson;
 
 	// Start is called before the first frame update
 	void Start() {
@@ -25,13 +27,19 @@ public class PoissonDemoScript : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// Using Poisson generated points, spawns in creates with minimum distance from each other onto the plane
+	/// Spawns objects onto plane either randomly or using Poisson Disc Sampling
 	/// </summary>
 	/// <returns>Waits 0.1 seconds before continuing the for loop</returns>
 	IEnumerator SpawnObjects() {
-		radius = 10;
+		radius = 7.5f;//Random.Range(7.5f, 10f);
 
-		points = PoissonDiscSampler.GeneratePoints(radius, 100, attemptAmount);
+		if (usePoisson) {
+			points = PoissonDiscSampler.GeneratePoints(radius, 100, attemptAmount);
+		} else {
+			for (int i = 0; i < 100/*Random.Range(75, 100)*/; i++) {
+				points.Add(new Vector2(Random.Range(0f, 100f), Random.Range(0f, 100f)));
+			}
+		}
 
 		// Checks if each poing can be placed on a terrain then spawns in the object
 		foreach (Vector2 point in points) {
@@ -40,13 +48,11 @@ public class PoissonDemoScript : MonoBehaviour {
 			// Checks whether object can be placed and spawns either tree or rock
 			if (Physics.Raycast(raycastOrigin, Vector3.down, out hit)) {
 				currentObject = Instantiate(treePrefab[Random.Range(0, treePrefab.Length)]).transform;
-				
+
 				currentObject.SetPositionAndRotation(new Vector3(hit.point.x, hit.point.y + (currentObject.localScale.y / 2), hit.point.z), Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation);
 			}
 
 			yield return new WaitForSeconds(0.1f);
 		}
-
-		Debug.Log("Done");
 	}
 }
