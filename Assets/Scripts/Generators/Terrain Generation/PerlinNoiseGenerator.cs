@@ -17,7 +17,7 @@ public static class PerlinNoiseGenerator {
 	/// <param name="a_chunkX"></param>
 	/// <param name="a_chunkZ"></param>
 	/// <returns></returns>
-	public static float[,] GenerateNoise(int a_octaves, float a_persistance, float a_lacunarity, int a_meshSize, float a_scale, Vector2 a_offsets, float a_chunkX, float a_chunkZ) {
+	public static float[,] GenerateNoise(int a_octaves, float a_persistance, float a_lacunarity, int a_meshSize, float a_scale, Vector2 a_offsets, float a_chunkX = 0, float a_chunkZ = 0) {
 		
 		float[,] noiseMap = new float[a_meshSize + 1, a_meshSize + 1];
 		

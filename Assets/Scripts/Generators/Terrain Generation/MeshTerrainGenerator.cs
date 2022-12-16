@@ -9,7 +9,7 @@ public class MeshTerrainGenerator : MonoBehaviour {
 	[Header("Mesh dimensions")]
 	private readonly int meshSize = 100;
 	private readonly float scale = 2f;
-	private readonly int height = 85;
+	private readonly float height = 85;
 
 	float[,] noiseMap;
 
