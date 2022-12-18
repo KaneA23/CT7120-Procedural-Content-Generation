@@ -24,10 +24,6 @@ public class PauseMenuScript : MonoBehaviour {
 			isPaused = !isPaused;
 			pauseScreen.SetActive(isPaused);
 			Time.timeScale = isPaused ? 0 : 1;
-
-			// Allows interaction with pause menu
-			Cursor.visible = isPaused;
-			Cursor.lockState = isPaused ? CursorLockMode.None : CursorLockMode.Locked;
 		}
 	}
 

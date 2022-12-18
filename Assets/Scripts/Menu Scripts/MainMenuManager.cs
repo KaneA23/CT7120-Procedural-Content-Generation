@@ -54,7 +54,6 @@ public class MainMenuManager : MonoBehaviour {
 	/// Leaves game
 	/// </summary>
 	public void OnExitPressed() {
-		Debug.Log("Exited game");
 		Application.Quit();
 	}
 

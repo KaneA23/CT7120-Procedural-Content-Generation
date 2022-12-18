@@ -7,7 +7,7 @@ public class TerrainDemoScript : MonoBehaviour {
 	private Mesh mesh;
 	private MeshFilter meshFilter;
 
-	private int meshSize = 100;
+	private readonly int meshSize = 100;
 
 	private float scale;
 	private float height;
@@ -15,9 +15,14 @@ public class TerrainDemoScript : MonoBehaviour {
 	private int offsetX;
 	private int offsetZ;
 
-	private int octaves = 10;
-	private float persistance = 0.33f;
-	private float lacunarity = 2;
+	private int octaves;
+	private float persistance;
+	private float lacunarity;
+
+	private Color snowColour = Color.white;
+	private Color rockColour = Color.grey;
+	private Color grassColour = new Color(0, 0.25f, 0.1f); // Dark Green
+	private Color seaColour = new Color(0, 0, 0.4f);       // Blue
 
 	public float Scale {
 		get {
@@ -89,16 +94,48 @@ public class TerrainDemoScript : MonoBehaviour {
 		}
 	}
 
+	public Color SnowColour {
+		get {
+			return snowColour;
+		}
+
+		set {
+			snowColour = value;
+		}
+	}
+	
+	public Color RockColour {
+		get {
+			return rockColour;
+		}
+
+		set {
+			rockColour = value;
+		}
+	}
+	
+	public Color GrassColour {
+		get {
+			return grassColour;
+		}
+
+		set {
+			grassColour = value;
+		}
+	}public Color SeaColour {
+		get {
+			return seaColour;
+		}
+
+		set {
+			seaColour = value;
+		}
+	}
 
 	private float[,] noiseMap;
 
 	private Vector3[] vertices;
 	private int[] triangles;
-
-	private Color snowColour = Color.white;
-	private Color rockColour = Color.grey;
-	private Color grassColour = new Color(0, 0.25f, 0.1f); // Dark Green
-	private Color seaColour = new Color(0, 0, 0.4f);       // Blue
 
 	private Color[] colours;
 
@@ -121,15 +158,15 @@ public class TerrainDemoScript : MonoBehaviour {
 		offsetX = Random.Range(0, 100000);
 		offsetZ = Random.Range(0, 100000);
 
-		//InvokeRepeating(nameof(CreateMeshShape), 5f, 5f);
-	}
+		snowColour = Color.white;
+		rockColour = Color.grey;
+		grassColour = new Color(0, 0.25f, 0.1f);
+		seaColour = new Color(0, 0, 0.4f);
 
-	// Update is called once per frame
-	void LateUpdate() {
 		CreateMeshShape();
 	}
 
-	private void CreateMeshShape() {
+	public void CreateMeshShape() {
 		noiseMap = PerlinNoiseGenerator.GenerateNoise(octaves, persistance, lacunarity, meshSize, scale, new Vector2(offsetX, offsetZ));
 
 		vertices = new Vector3[(meshSize + 1) * (meshSize + 1)];

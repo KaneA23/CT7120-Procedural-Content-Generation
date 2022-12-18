@@ -40,6 +40,12 @@ public class PlayerMovement : MonoBehaviour {
 			isGrounded = Physics.Raycast(transform.position, Vector3.down, 1.25f);
 
 			PlayerInput();
+
+			Cursor.visible = false;
+			Cursor.lockState = CursorLockMode.Locked;
+		} else {
+			Cursor.visible = true;
+			Cursor.lockState = CursorLockMode.None;
 		}
 	}
 
