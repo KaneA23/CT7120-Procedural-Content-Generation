@@ -61,22 +61,10 @@ public class MeshTerrainGenerator : MonoBehaviour {
 		currentX = 0;
 		currentZ = 0;
 
-		if (DDOL.IsRandomColours) {
-			snowColour = Random.ColorHSV();
-			rockColour = Random.ColorHSV();
-			grassColour = Random.ColorHSV();
-			seaColour = Random.ColorHSV();
-
-			snowColour.a = 1;
-			rockColour.a = 1;
-			grassColour.a = 1;
-			seaColour.a = 1;
-		} else {
-			snowColour = DDOL.SnowColour;
-			rockColour = DDOL.StoneColour;
-			grassColour = DDOL.GrassColour;
-			seaColour = DDOL.SeaColour;
-		}
+		snowColour = DDOL.SnowColour;
+		rockColour = DDOL.StoneColour;
+		grassColour = DDOL.GrassColour;
+		seaColour = DDOL.SeaColour;
 
 		// Generates meshes in 20x20 grid
 		for (int z = -10; z <= 10; z++) {

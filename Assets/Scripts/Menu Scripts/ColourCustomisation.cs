@@ -15,9 +15,20 @@ public class ColourCustomisation : MonoBehaviour {
 	[SerializeField] private Slider blueSlider;
 
 	[Space(5)]
+	private Color defaultColour;
 	[SerializeField] private Color chosenColour;
 
-	private Color defaultColour;
+	private bool useRandomColours;
+
+	public bool UseRandomColours {
+		get {
+			return useRandomColours;
+		}
+
+		set {
+			useRandomColours = value;
+		}
+	}
 
 	private void Awake() {
 		DDOL = FindObjectOfType<DDOLManager>();
@@ -25,7 +36,7 @@ public class ColourCustomisation : MonoBehaviour {
 
 	// Start is called before the first frame update
 	void Start() {
-		DDOL.IsRandomColours = false;
+		useRandomColours = false;
 		DDOL.IsRandomSeed = false;
 
 		redSlider.value = chosenColour.r;
@@ -75,6 +86,11 @@ public class ColourCustomisation : MonoBehaviour {
 	/// Stores the chosen colour of terrain segment in DDOL before changing scene
 	/// </summary>
 	private void OnDestroy() {
+		if (useRandomColours) {
+			chosenColour = Random.ColorHSV();
+			chosenColour.a = 1;
+		}
+
 		switch (gameObject.name) {
 			case "Snow":
 				DDOL.SnowColour = chosenColour;

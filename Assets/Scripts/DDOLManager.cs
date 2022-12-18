@@ -16,8 +16,6 @@ public class DDOLManager : MonoBehaviour {
 	private Color grassColour;  // Dark Green
 	private Color seaColour;    // Blue
 
-	private bool isRandomColours;
-
 	public string Seed {
 		get {
 			return seed;
@@ -69,15 +67,6 @@ public class DDOLManager : MonoBehaviour {
 		}
 		set {
 			seaColour = value;
-		}
-	}
-
-	public bool IsRandomColours {
-		get {
-			return isRandomColours;
-		}
-		set {
-			isRandomColours = value;
 		}
 	}
 

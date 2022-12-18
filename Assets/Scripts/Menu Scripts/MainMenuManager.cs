@@ -1,5 +1,8 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 /// <summary>
 /// Controls the main menu screen.
@@ -20,18 +23,11 @@ public class MainMenuManager : MonoBehaviour {
 		loadScreen.SetActive(false);
 	}
 
-	// Update is called once per frame
-	void Update() {
-
-	}
-
 	/// <summary>
 	/// If Auto play button pressed, a random seed and the default terrain colours are used
 	/// </summary>
 	public void OnAutoPlayPressed() {
 		DDOL.IsRandomSeed = true;
-
-		DDOL.IsRandomColours = false;
 
 		DDOL.SnowColour = new Color(0.85f, 0.85f, 0.85f);   // White
 		DDOL.StoneColour = new Color(0.35f, 0.35f, 0.35f);  // Dark Grey
@@ -47,7 +43,29 @@ public class MainMenuManager : MonoBehaviour {
 
 		SceneManager.LoadSceneAsync(1);
 
-		//StartCoroutine(ShowLoadingProgress());
+		//StartCoroutine(ShowLoadingProgress(1));
+	}
+
+	/// <summary>
+	/// Begins to load next scene behind load screen
+	/// </summary>
+	public void OnNoiseDemoPressed() {
+		loadScreen.SetActive(true);
+
+		SceneManager.LoadSceneAsync(2);
+
+		//StartCoroutine(ShowLoadingProgress(2));
+	}
+	
+	/// <summary>
+	/// Begins to load next scene behind load screen
+	/// </summary>
+	public void OnPoissonDemoPressed() {
+		loadScreen.SetActive(true);
+
+		SceneManager.LoadSceneAsync(3);
+
+		//StartCoroutine(ShowLoadingProgress(3));
 	}
 
 	/// <summary>
@@ -57,19 +75,19 @@ public class MainMenuManager : MonoBehaviour {
 		Application.Quit();
 	}
 
-	/// <summary>
-	/// While scene is being loaded, show load screen
-	/// </summary>
-	/// <returns>Enters coroutine every frame until level is loaded</returns>
-	//private IEnumerator ShowLoadingProgress() {
-	//	AsyncOperation loadOperation = SceneManager.LoadSceneAsync(1);
+	///// <summary>
+	///// While scene is being loaded, show load screen
+	///// </summary>
+	///// <returns>Enters coroutine every frame until level is loaded</returns>
+	//private IEnumerator ShowLoadingProgress(int a_sceneIndex) {
+	//	AsyncOperation loadOperation = SceneManager.LoadSceneAsync(a_sceneIndex);
 	//
 	//	//loadbar.value = 0;
 	//
 	//	while (!loadOperation.isDone) {
 	//		float progress = Mathf.Clamp01(loadOperation.progress / 0.9f);
 	//
-	//		//loadbar.value = progress;
+	//		loadbar.value = progress;
 	//
 	//		yield return null;
 	//	}
