@@ -51,17 +51,19 @@ public class MainMenuManager : MonoBehaviour {
 	/// </summary>
 	public void OnNoiseDemoPressed() {
 		loadScreen.SetActive(true);
+		Destroy(DDOL.gameObject);
 
 		SceneManager.LoadSceneAsync(2);
 
 		//StartCoroutine(ShowLoadingProgress(2));
 	}
-	
+
 	/// <summary>
 	/// Begins to load next scene behind load screen
 	/// </summary>
 	public void OnPoissonDemoPressed() {
 		loadScreen.SetActive(true);
+		Destroy(DDOL.gameObject);
 
 		SceneManager.LoadSceneAsync(3);
 

@@ -11,6 +11,7 @@ public class PoissonDemoScript : MonoBehaviour {
 	[SerializeField] private GameObject[] treePrefab;
 
 	[SerializeField] private Slider attemptSlider;
+	[SerializeField] private Slider radiusSlider;
 
 	private List<GameObject> spawnedObjects;
 
@@ -34,6 +35,9 @@ public class PoissonDemoScript : MonoBehaviour {
 		attemptAmount = 30;
 		radius = 10f;
 
+		attemptSlider.value = attemptAmount;
+		radiusSlider.value = radius;
+
 		usePoisson = true;
 
 		StartCoroutine(SpawnObjects());
@@ -51,7 +55,6 @@ public class PoissonDemoScript : MonoBehaviour {
 		}
 
 		spawnedObjects.Clear();
-		points.Clear();
 	}
 
 	/// <summary>
@@ -60,11 +63,12 @@ public class PoissonDemoScript : MonoBehaviour {
 	/// <returns>Waits 0.1 seconds before continuing the for loop</returns>
 	IEnumerator SpawnObjects() {
 		//radius = 7.5f;//Random.Range(7.5f, 10f);
+		points.Clear();
 
 		if (usePoisson) {
 			points = PoissonDiscSampler.GeneratePoints(radius, 100, attemptAmount);
 		} else {
-			for (int i = 0; i < 100/*Random.Range(75, 100)*/; i++) {
+			for (int i = 0; i < 100; i++) {
 				points.Add(new Vector2(Random.Range(0f, 100f), Random.Range(0f, 100f)));
 			}
 		}
