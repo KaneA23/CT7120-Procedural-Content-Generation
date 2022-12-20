@@ -19,7 +19,7 @@ public static class LehmerPRNG {
 		long result = 0;
 		long value;
 
-		// Applies formular Xn+1 = (aXn + c) % m until result within user's desired range
+		// Applies formula Xn+1 = (aXn + c) % m until result within user's desired range
 		do {
 			for (int n = 0; n < 10; n++) {
 				value = (a * x + c) % m;

@@ -182,7 +182,7 @@ MonoBehaviour:
   redSlider: {fileID: 438399409}
   greenSlider: {fileID: 1420671000}
   blueSlider: {fileID: 1607629909}
-  chosenColour: {r: 0, g: 0.3, b: 0.1, a: 1}
+  chosenColour: {r: 0, g: 0.3, b: 0, a: 1}
 --- !u!114 &4993403
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2783,7 +2783,7 @@ GameObject:
   - component: {fileID: 566814283}
   - component: {fileID: 566814282}
   m_Layer: 5
-  m_Name: Stone
+  m_Name: Rock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2829,7 +2829,7 @@ MonoBehaviour:
   redSlider: {fileID: 816093932}
   greenSlider: {fileID: 684370774}
   blueSlider: {fileID: 203178576}
-  chosenColour: {r: 0.35, g: 0.35, b: 0.35, a: 1}
+  chosenColour: {r: 0.25, g: 0.25, b: 0.25, a: 1}
 --- !u!114 &566814283
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2850,7 +2850,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Stone
+  m_text: Rock
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3557,7 +3557,7 @@ MonoBehaviour:
   redSlider: {fileID: 1615687083}
   greenSlider: {fileID: 681918370}
   blueSlider: {fileID: 73317231}
-  chosenColour: {r: 0, g: 0, b: 0.4, a: 1}
+  chosenColour: {r: 0, g: 0, b: 0.64, a: 1}
 --- !u!114 &705543798
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9173,7 +9173,7 @@ MonoBehaviour:
   redSlider: {fileID: 1151283046}
   greenSlider: {fileID: 1326488287}
   blueSlider: {fileID: 1959292971}
-  chosenColour: {r: 0.9, g: 0.9, b: 0.9, a: 1}
+  chosenColour: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &1854367363
 GameObject:
   m_ObjectHideFlags: 0

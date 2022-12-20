@@ -1,7 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Controls the mesh generation for terrain demo.
+/// Mesh can be altered by user through changing mesh shape, amount of detail and colours used.
+/// </summary>
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class TerrainDemoScript : MonoBehaviour {
 	private Mesh mesh;
@@ -15,16 +17,20 @@ public class TerrainDemoScript : MonoBehaviour {
 	private int offsetX;
 	private int offsetZ;
 
+	// Fractal noise properties
 	private int octaves;
 	private float persistance;
 	private float lacunarity;
 
+	// Colour properties
 	private Color snowColour = Color.white;
 	private Color rockColour = Color.grey;
 	private Color grassColour = new Color(0, 0.25f, 0.1f); // Dark Green
 	private Color seaColour = new Color(0, 0, 0.4f);       // Blue
 
 	private Gradient colourGradient = new Gradient();
+
+	#region GetterSetters
 
 	public float Scale {
 		get {
@@ -135,6 +141,8 @@ public class TerrainDemoScript : MonoBehaviour {
 		}
 	}
 
+	#endregion GetterSetters
+
 	private float[,] noiseMap;
 
 	private Vector3[] vertices;
@@ -147,7 +155,7 @@ public class TerrainDemoScript : MonoBehaviour {
 	}
 
 	// Start is called before the first frame update
-	void Start() {
+	private void Start() {
 		mesh = new Mesh();
 		meshFilter.mesh = mesh;
 
@@ -169,51 +177,24 @@ public class TerrainDemoScript : MonoBehaviour {
 		CreateMeshShape();
 	}
 
-	public void ChangeColourGradient() {
-		GradientColorKey[] colourKey = new GradientColorKey[4];
-
-		
-		colourKey[0].color = seaColour;
-		colourKey[0].time = 0f;
-		colourKey[1].color = grassColour;
-		colourKey[1].time = 0.35f;
-		colourKey[2].color = rockColour;
-		colourKey[2].time = 0.6f;
-		colourKey[3].color = snowColour;
-		colourKey[3].time = 0.8f;
-
-		GradientAlphaKey[] alphaKey = new GradientAlphaKey[1];
-		alphaKey[0].alpha = 1f;
-		alphaKey[0].time = 0f;
-
-		colourGradient.SetKeys(colourKey, alphaKey);
-	}
-
+	/// <summary>
+	/// Creates the data for the mesh shape and colours depending on noisemap generated
+	/// </summary>
 	public void CreateMeshShape() {
+		colourGradient = TerrainColourManager.CreateColourGradient(SeaColour, GrassColour, RockColour, SnowColour);
+
 		noiseMap = PerlinNoiseGenerator.GenerateNoise(octaves, persistance, lacunarity, meshSize, scale, new Vector2(offsetX, offsetZ));
 
 		vertices = new Vector3[(meshSize + 1) * (meshSize + 1)];
 		colours = new Color[vertices.Length];
 
+		// Uses the perlin noise to create points on mesh
 		int vertexIndex = 0;
-		float colourOffset;
 		for (int z = 0; z <= meshSize; z++) {
 			for (int x = 0; x <= meshSize; x++) {
 				vertices[vertexIndex] = new Vector3(x, noiseMap[x, z] * height, z);
 
-				colourOffset = Random.Range(-0.01f, 0.01f);
-
-				// Dependent on how tall the mesh is in the y-axis, different colours are applied
-				//if (noiseMap[x, z] > 0.7f) {
-				//	colours[vertexIndex] = new Color(snowColour.r + colourOffset, //snowColour.g + colourOffset, snowColour.b + colourOffset);
-				//} else if (noiseMap[x, z] >= 0.5f) {
-				//	colours[vertexIndex] = new Color(rockColour.r + colourOffset, //rockColour.g + colourOffset, rockColour.b + colourOffset);
-				//} else if (noiseMap[x, z] > 0.3f) {
-				//	colours[vertexIndex] = new Color(grassColour.r, grassColour.g + //colourOffset, grassColour.b);
-				//} else {
-				//	colours[vertexIndex] = new Color(seaColour.r, seaColour.g, seaColour.b /+ /colourOffset);
-				//}
-
+				//sets up which colour to use where gradient time is the y-axis
 				colours[vertexIndex] = colourGradient.Evaluate(noiseMap[x, z]);
 
 				vertexIndex++;
@@ -251,15 +232,8 @@ public class TerrainDemoScript : MonoBehaviour {
 	private void UpdateMesh() {
 		mesh.Clear();
 
-		//Vector2[] uvs = new Vector2[vertices.Length];
-		//
-		//for (int i = 0; i < vertices.Length; i++) {
-		//	uvs[i] = new Vector2(vertices[i].x, vertices[i].z);
-		//}
-
 		mesh.vertices = vertices;
 		mesh.triangles = triangles;
-		//currentMesh.uv = uvs;
 		mesh.colors = colours;
 
 		mesh.RecalculateBounds();

@@ -4,14 +4,13 @@ using UnityEngine;
 /// Controls the position of the player's first person camera.
 /// </summary>
 public class CameraController : MonoBehaviour {
-	private float mouseSensitivity = 10f;
-
-	// Mouse movement
-	private Vector2 mousePos;
-
+	private readonly float mouseSensitivity = 10f;
 	private float xRotation = 0f;
 
-	private Transform playerBody;
+	private Vector2 mousePos;
+	
+	// Turning playerbody keeps forward as direction player is facing
+	private Transform playerBody;	
 
 	private void Awake() {
 		playerBody = transform.parent;

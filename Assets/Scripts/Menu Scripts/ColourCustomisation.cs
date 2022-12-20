@@ -7,9 +7,10 @@ using UnityEngine.UI;
 public class ColourCustomisation : MonoBehaviour {
 	private DDOLManager DDOL;
 
+	[Header("Colour Elements")]
 	[SerializeField] private Image colourPreview;
 
-	[Header("Colour Elements")]
+	[Space(5)]
 	[SerializeField] private Slider redSlider;
 	[SerializeField] private Slider greenSlider;
 	[SerializeField] private Slider blueSlider;
@@ -35,7 +36,7 @@ public class ColourCustomisation : MonoBehaviour {
 	}
 
 	// Start is called before the first frame update
-	void Start() {
+	private void Start() {
 		useRandomColours = false;
 		DDOL.IsRandomSeed = false;
 
@@ -46,6 +47,8 @@ public class ColourCustomisation : MonoBehaviour {
 		colourPreview.color = chosenColour;
 		defaultColour = chosenColour;
 	}
+
+	#region Sliders
 
 	/// <summary>
 	/// Changes the amount of red in terrain
@@ -71,6 +74,8 @@ public class ColourCustomisation : MonoBehaviour {
 		colourPreview.color = chosenColour;
 	}
 
+	#endregion Sliders
+
 	/// <summary>
 	/// Changes colours for terrain to default ones
 	/// </summary>
@@ -91,13 +96,14 @@ public class ColourCustomisation : MonoBehaviour {
 			chosenColour.a = 1;
 		}
 
+		// Uses the name of gameobject to determine which segment colour is being set
 		switch (gameObject.name) {
 			case "Snow":
 				DDOL.SnowColour = chosenColour;
 				break;
 
-			case "Stone":
-				DDOL.StoneColour = chosenColour;
+			case "Rock":
+				DDOL.RockColour = chosenColour;
 				break;
 
 			case "Grass":

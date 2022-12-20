@@ -1986,13 +1986,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c814a948e4101234c958dd25a7598e8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  plane: {fileID: 44287241}
-  treePrefab:
+  objPrefabs:
   - {fileID: 1915035298906423408, guid: c6cc056eb37a3d4448281f3cc04f415a, type: 3}
   - {fileID: 1915035298906423408, guid: 70fc74d606aaeb54085ac6663c5bf569, type: 3}
   attemptSlider: {fileID: 592942862}
   radiusSlider: {fileID: 370636325}
-  usePoisson: 0
 --- !u!1 &1905178361
 GameObject:
   m_ObjectHideFlags: 0

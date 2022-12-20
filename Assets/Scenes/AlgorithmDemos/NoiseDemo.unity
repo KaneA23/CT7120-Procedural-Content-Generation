@@ -1185,7 +1185,7 @@ GameObject:
   - component: {fileID: 176321340}
   - component: {fileID: 176321341}
   m_Layer: 5
-  m_Name: Slider
+  m_Name: Lacunarity Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1846,7 +1846,7 @@ GameObject:
   - component: {fileID: 287959458}
   - component: {fileID: 287959459}
   m_Layer: 5
-  m_Name: Slider
+  m_Name: Grass G Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2500,7 +2500,7 @@ GameObject:
   - component: {fileID: 441046640}
   - component: {fileID: 441046641}
   m_Layer: 5
-  m_Name: Slider
+  m_Name: Persistance Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2670,7 +2670,7 @@ GameObject:
   - component: {fileID: 444545262}
   - component: {fileID: 444545263}
   m_Layer: 5
-  m_Name: Slider
+  m_Name: Sea G Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3149,7 +3149,7 @@ GameObject:
   - component: {fileID: 597025605}
   - component: {fileID: 597025606}
   m_Layer: 5
-  m_Name: Slider
+  m_Name: Snow B Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3328,7 +3328,7 @@ GameObject:
   - component: {fileID: 619261121}
   - component: {fileID: 619261122}
   m_Layer: 5
-  m_Name: Slider
+  m_Name: Sea R Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3832,7 +3832,7 @@ GameObject:
   - component: {fileID: 709481931}
   - component: {fileID: 709481932}
   m_Layer: 5
-  m_Name: Slider
+  m_Name: ZOffset Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3935,7 +3935,7 @@ GameObject:
   - component: {fileID: 722159192}
   - component: {fileID: 722159193}
   m_Layer: 5
-  m_Name: Slider
+  m_Name: Snow R Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4303,7 +4303,7 @@ GameObject:
   - component: {fileID: 749654181}
   - component: {fileID: 749654182}
   m_Layer: 5
-  m_Name: Slider
+  m_Name: Scale Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4519,7 +4519,7 @@ GameObject:
   - component: {fileID: 838178012}
   - component: {fileID: 838178013}
   m_Layer: 5
-  m_Name: Slider
+  m_Name: Octave Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5136,7 +5136,7 @@ GameObject:
   - component: {fileID: 989318896}
   - component: {fileID: 989318897}
   m_Layer: 5
-  m_Name: Slider
+  m_Name: Sea B Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6169,7 +6169,7 @@ GameObject:
   - component: {fileID: 1107044297}
   - component: {fileID: 1107044298}
   m_Layer: 5
-  m_Name: Slider
+  m_Name: XOffset Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6681,7 +6681,7 @@ GameObject:
   - component: {fileID: 1172795196}
   - component: {fileID: 1172795197}
   m_Layer: 5
-  m_Name: Slider
+  m_Name: Snow G Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6973,7 +6973,7 @@ GameObject:
   - component: {fileID: 1231938629}
   - component: {fileID: 1231938630}
   m_Layer: 5
-  m_Name: Slider
+  m_Name: Rock R Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9492,19 +9492,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5599dd6153b7d345959cbf72c55ded0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scale: {fileID: 749654182}
-  height: {fileID: 1969864667}
-  offsetX: {fileID: 1107044298}
-  offsetZ: {fileID: 709481932}
-  octaves: {fileID: 838178013}
-  persistance: {fileID: 441046641}
-  lacunarity: {fileID: 176321341}
+  scaleSlider: {fileID: 749654182}
+  heightSlider: {fileID: 1969864667}
+  offsetXSlider: {fileID: 1107044298}
+  offsetZSlider: {fileID: 709481932}
+  octaveSlider: {fileID: 838178013}
+  persistanceSlider: {fileID: 441046641}
+  lacunaritySlider: {fileID: 176321341}
   snowR: {fileID: 722159193}
   snowG: {fileID: 1172795197}
   snowB: {fileID: 597025606}
-  stoneR: {fileID: 1231938630}
-  stoneG: {fileID: 1921112858}
-  stoneB: {fileID: 1755826878}
+  rockR: {fileID: 1231938630}
+  rockG: {fileID: 1921112858}
+  rockB: {fileID: 1755826878}
   grassR: {fileID: 2129660908}
   grassG: {fileID: 287959459}
   grassB: {fileID: 2068143378}
@@ -10029,7 +10029,7 @@ GameObject:
   - component: {fileID: 1755826877}
   - component: {fileID: 1755826878}
   m_Layer: 5
-  m_Name: Slider
+  m_Name: Rock B Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10857,7 +10857,7 @@ GameObject:
   - component: {fileID: 1921112857}
   - component: {fileID: 1921112858}
   m_Layer: 5
-  m_Name: Slider
+  m_Name: Rock G Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11207,7 +11207,7 @@ GameObject:
   - component: {fileID: 1969864666}
   - component: {fileID: 1969864667}
   m_Layer: 5
-  m_Name: Slider
+  m_Name: Height Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11462,7 +11462,7 @@ GameObject:
   - component: {fileID: 2068143377}
   - component: {fileID: 2068143378}
   m_Layer: 5
-  m_Name: Slider
+  m_Name: Grass B Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11565,7 +11565,7 @@ GameObject:
   - component: {fileID: 2129660907}
   - component: {fileID: 2129660908}
   m_Layer: 5
-  m_Name: Slider
+  m_Name: Grass R Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -1,8 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
+
+/// <summary>
+/// Contains all scenes accessible within the build.
+/// </summary>
+public enum SceneIndex {
+	MENU,
+	TERRAIN,
+	NOISE_DEMO,
+	POISSON_DEMO,
+}
 
 /// <summary>
 /// Controls the main menu screen.
@@ -11,7 +18,6 @@ public class MainMenuManager : MonoBehaviour {
 	private DDOLManager DDOL;
 
 	[SerializeField] private GameObject loadScreen;
-	//[SerializeField] private Slider loadbar;
 
 	private void Awake() {
 		DDOL = FindObjectOfType<DDOLManager>();
@@ -19,7 +25,6 @@ public class MainMenuManager : MonoBehaviour {
 
 	// Start is called before the first frame update
 	private void Start() {
-		//loadbar.value = 0;
 		loadScreen.SetActive(false);
 	}
 
@@ -29,10 +34,10 @@ public class MainMenuManager : MonoBehaviour {
 	public void OnAutoPlayPressed() {
 		DDOL.IsRandomSeed = true;
 
-		DDOL.SnowColour = Color.white;   // White
-		DDOL.StoneColour = new Color(0.25f, 0.25f, 0.25f);  // Dark Grey
-		DDOL.GrassColour = new Color(0, 0.3f, 0);        // Dark Green
-		DDOL.SeaColour = new Color(0, 0, 0.64f);             // Blue
+		DDOL.SnowColour = Color.white;                      // White
+		DDOL.RockColour = new Color(0.25f, 0.25f, 0.25f);	// Dark Grey
+		DDOL.GrassColour = new Color(0, 0.3f, 0);           // Dark Green
+		DDOL.SeaColour = new Color(0, 0, 0.64f);            // Blue
 	}
 
 	/// <summary>
@@ -41,9 +46,7 @@ public class MainMenuManager : MonoBehaviour {
 	public void OnPlayPressed() {
 		loadScreen.SetActive(true);
 
-		SceneManager.LoadSceneAsync(1);
-
-		//StartCoroutine(ShowLoadingProgress(1));
+		SceneManager.LoadSceneAsync((int)SceneIndex.TERRAIN);
 	}
 
 	/// <summary>
@@ -53,9 +56,7 @@ public class MainMenuManager : MonoBehaviour {
 		loadScreen.SetActive(true);
 		Destroy(DDOL.gameObject);
 
-		SceneManager.LoadSceneAsync(2);
-
-		//StartCoroutine(ShowLoadingProgress(2));
+		SceneManager.LoadSceneAsync((int)SceneIndex.NOISE_DEMO);
 	}
 
 	/// <summary>
@@ -65,9 +66,7 @@ public class MainMenuManager : MonoBehaviour {
 		loadScreen.SetActive(true);
 		Destroy(DDOL.gameObject);
 
-		SceneManager.LoadSceneAsync(3);
-
-		//StartCoroutine(ShowLoadingProgress(3));
+		SceneManager.LoadSceneAsync((int)SceneIndex.POISSON_DEMO);
 	}
 
 	/// <summary>
@@ -76,22 +75,4 @@ public class MainMenuManager : MonoBehaviour {
 	public void OnExitPressed() {
 		Application.Quit();
 	}
-
-	///// <summary>
-	///// While scene is being loaded, show load screen
-	///// </summary>
-	///// <returns>Enters coroutine every frame until level is loaded</returns>
-	//private IEnumerator ShowLoadingProgress(int a_sceneIndex) {
-	//	AsyncOperation loadOperation = SceneManager.LoadSceneAsync(a_sceneIndex);
-	//
-	//	//loadbar.value = 0;
-	//
-	//	while (!loadOperation.isDone) {
-	//		float progress = Mathf.Clamp01(loadOperation.progress / 0.9f);
-	//
-	//		loadbar.value = progress;
-	//
-	//		yield return null;
-	//	}
-	//}
 }

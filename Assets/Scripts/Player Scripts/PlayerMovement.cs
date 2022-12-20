@@ -3,6 +3,7 @@ using UnityEngine;
 /// <summary>
 /// Controls the player movement behaviours in a first person character.
 /// </summary>
+[RequireComponent(typeof(Rigidbody))]
 public class PlayerMovement : MonoBehaviour {
 	private float currentSpeed;
 	private readonly float walkSpeed = 7.5f;
@@ -10,8 +11,6 @@ public class PlayerMovement : MonoBehaviour {
 
 	private readonly float jumpForce = 100;
 
-	//private float hMovement;
-	//private float vMovement;
 	private Vector2 movement;
 
 	private bool isRunning;
@@ -94,21 +93,4 @@ public class PlayerMovement : MonoBehaviour {
 			isGrounded = false;
 		}
 	}
-
-	///// <summary>
-	///// Resets jump when collide with an object
-	///// </summary>
-	///// <param name="collision">Object player collided</param>
-	//private void OnCollisionEnter(Collision collision) {
-	//	isGrounded = true;
-	//	isJumping = false;
-	//}
-
-	///// <summary>
-	///// Prevents jumping mid-air
-	///// </summary>
-	///// <param name="collision">Object player was previously touching</param>
-	//private void OnCollisionExit(Collision collision) {
-	//	isGrounded = false;
-	//}
 }

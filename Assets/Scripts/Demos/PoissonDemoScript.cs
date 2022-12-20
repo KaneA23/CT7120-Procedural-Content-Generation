@@ -7,11 +7,16 @@ using UnityEngine.UI;
 /// Controls the spawning of objects in the Poisson Disc Sample demo scene.
 /// </summary>
 public class PoissonDemoScript : MonoBehaviour {
-	[SerializeField] private Transform plane;
-	[SerializeField] private GameObject[] treePrefab;
+	[Header("Prefabs")]
+	[SerializeField] private GameObject[] objPrefabs;
 
+	[Header("Algorithm Customisation")]
 	[SerializeField] private Slider attemptSlider;
 	[SerializeField] private Slider radiusSlider;
+
+	private float radius;
+	private int attemptAmount;
+	private bool usePoisson;    // Checks whether the algorithm is being used or random?
 
 	private List<GameObject> spawnedObjects;
 
@@ -20,15 +25,10 @@ public class PoissonDemoScript : MonoBehaviour {
 
 	private Vector3 raycastOrigin;
 
-	private float radius;
-	private int attemptAmount = 30;
-
 	private List<Vector2> points;
 
-	[SerializeField] private bool usePoisson;
-
 	// Start is called before the first frame update
-	void Start() {
+	private void Start() {
 		points = new List<Vector2>();
 		spawnedObjects = new List<GameObject>();
 
@@ -39,17 +39,21 @@ public class PoissonDemoScript : MonoBehaviour {
 		radiusSlider.value = radius;
 
 		usePoisson = true;
-
-		//StartCoroutine(SpawnObjects());
 	}
 
+	/// <summary>
+	/// Restarts generation with given values
+	/// </summary>
 	public void OnGenerateButtonPressed() {
 		StopAllCoroutines();
 		RemoveOldObjects();
 		StartCoroutine(SpawnObjects());
 	}
 
-	void RemoveOldObjects() {
+	/// <summary>
+	/// Remoces all objects that were previously spawned in
+	/// </summary>
+	private void RemoveOldObjects() {
 		foreach (GameObject obj in spawnedObjects) {
 			Destroy(obj);
 		}
@@ -61,8 +65,7 @@ public class PoissonDemoScript : MonoBehaviour {
 	/// Spawns objects onto plane either randomly or using Poisson Disc Sampling
 	/// </summary>
 	/// <returns>Waits 0.1 seconds before continuing the for loop</returns>
-	IEnumerator SpawnObjects() {
-		//radius = 7.5f;//Random.Range(7.5f, 10f);
+	private IEnumerator SpawnObjects() {
 		points.Clear();
 
 		if (usePoisson) {
@@ -79,7 +82,7 @@ public class PoissonDemoScript : MonoBehaviour {
 
 			// Checks whether object can be placed and spawns either tree or rock
 			if (Physics.Raycast(raycastOrigin, Vector3.down, out hit)) {
-				currentObject = Instantiate(treePrefab[Random.Range(0, treePrefab.Length)]).transform;
+				currentObject = Instantiate(objPrefabs[Random.Range(0, objPrefabs.Length)]).transform;
 
 				currentObject.SetPositionAndRotation(new Vector3(hit.point.x, hit.point.y + (currentObject.localScale.y / 2), hit.point.z), Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation);
 
@@ -89,6 +92,8 @@ public class PoissonDemoScript : MonoBehaviour {
 			yield return new WaitForSeconds(0.1f);
 		}
 	}
+
+	#region Sliders
 
 	public float Radius {
 		get {
@@ -110,7 +115,12 @@ public class PoissonDemoScript : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Changes how many times the poisson sampler runs before discarding point
+	/// </summary>
 	public void ChangeAttemptAmount() {
 		attemptAmount = (int)attemptSlider.value;
 	}
+
+	#endregion Sliders
 }

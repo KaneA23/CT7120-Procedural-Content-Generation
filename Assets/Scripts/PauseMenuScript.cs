@@ -10,7 +10,7 @@ public class PauseMenuScript : MonoBehaviour {
 	private bool isPaused;
 
 	// Start is called before the first frame update
-	void Start() {
+	private void Start() {
 		isPaused = false;
 		pauseScreen.SetActive(isPaused);
 
@@ -18,9 +18,9 @@ public class PauseMenuScript : MonoBehaviour {
 	}
 
 	// Update is called once per frame
-	void Update() {
+	private void Update() {
 		// Toggles pause menu when player presses pause(/resume) button
-		if (Input.GetKeyDown(KeyCode.P)) {
+		if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.P)) {
 			isPaused = !isPaused;
 			pauseScreen.SetActive(isPaused);
 			Time.timeScale = isPaused ? 0 : 1;
@@ -31,6 +31,6 @@ public class PauseMenuScript : MonoBehaviour {
 	/// Returns to main menu scene
 	/// </summary>
 	public void OnMenuButtonPressed() {
-		SceneManager.LoadSceneAsync(0);
+		SceneManager.LoadSceneAsync((int)SceneIndex.MENU);
 	}
 }

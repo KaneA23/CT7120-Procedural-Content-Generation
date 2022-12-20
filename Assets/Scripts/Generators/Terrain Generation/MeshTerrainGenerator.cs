@@ -4,9 +4,14 @@ using UnityEngine;
 /// Controls the creation of a mesh terrain and allows basic alterations (i.e. layer colouring).
 /// </summary>
 public class MeshTerrainGenerator : MonoBehaviour {
+	[Header("Referenced Scripts")]
+	[SerializeField] private ObjectSpawner spawner;
 	private DDOLManager DDOL;
 
-	[Header("Mesh dimensions")]
+	[Header("Prefabs")]
+	[SerializeField] private MeshFilter chunkPrefab;
+
+	// Chunk properties
 	private readonly int meshSize = 100;
 	private readonly float scale = 2f;
 	private readonly float height = 85;
@@ -15,22 +20,18 @@ public class MeshTerrainGenerator : MonoBehaviour {
 
 	private Vector2 offsets;
 
+	// Fractal noise values
+	private readonly int octaves = 10;
+	private readonly float persistance = 0.33f;
+	private readonly float lacunarity = 2;
+
 	private Vector3[] vertices;
 	private int[] triangles;
-
-	[Header("Terrain Colouring")]
-	private Color snowColour;
-	private Color rockColour;
-	private Color grassColour;
-	private Color seaColour;
 
 	private Color[] colours;
 	private Gradient colourGradient;
 
-	[SerializeField] private MeshFilter chunkPrefab;
-
 	private GameObject[,] grid;
-
 	private readonly int gridSize = 11;
 
 	private int currentX;
@@ -42,10 +43,6 @@ public class MeshTerrainGenerator : MonoBehaviour {
 	private int maxZ;
 
 	private GameObject player;
-
-	private readonly int octaves = 10;
-	private readonly float persistance = 0.33f;
-	private readonly float lacunarity = 2;
 
 	private void Awake() {
 		DDOL = FindObjectOfType<DDOLManager>();
@@ -62,32 +59,9 @@ public class MeshTerrainGenerator : MonoBehaviour {
 		currentX = 0;
 		currentZ = 0;
 
-		snowColour = DDOL.SnowColour;
-		rockColour = DDOL.StoneColour;
-		grassColour = DDOL.GrassColour;
-		seaColour = DDOL.SeaColour;
+		colourGradient = TerrainColourManager.CreateColourGradient(DDOL.SeaColour, DDOL.GrassColour, DDOL.RockColour, DDOL.SnowColour);
 
-
-		colourGradient = new Gradient();
-
-		GradientColorKey[] colourKey = new GradientColorKey[4];
-
-		colourKey[0].color = seaColour;
-		colourKey[0].time = 0f;
-		colourKey[1].color = grassColour;
-		colourKey[1].time = 0.35f;
-		colourKey[2].color = rockColour;
-		colourKey[2].time = 0.6f;
-		colourKey[3].color = snowColour;
-		colourKey[3].time = 0.8f;
-
-		GradientAlphaKey[] alphaKey = new GradientAlphaKey[1];
-		alphaKey[0].alpha = 1f;
-		alphaKey[0].time = 0f;
-
-		colourGradient.SetKeys(colourKey, alphaKey);
-
-		// Generates meshes in 20x20 grid
+		// Generates 441 chunks (21x21)
 		for (int z = -10; z <= 10; z++) {
 			for (int x = -10; x <= 10; x++) {
 				noiseMap = PerlinNoiseGenerator.GenerateNoise(octaves, persistance, lacunarity, meshSize, scale, offsets, x, z);
@@ -107,16 +81,13 @@ public class MeshTerrainGenerator : MonoBehaviour {
 				continue;
 			}
 
-			FindObjectOfType<TreeSpawner>().SpawnObjects(cell.transform, TreeSpawner.EnvProp.TREE, 0.32f * height, 0.5f * height);
-			FindObjectOfType<TreeSpawner>().SpawnObjects(cell.transform, TreeSpawner.EnvProp.ROCK, 0.32f * height, 0.64f * height);
+			spawner.SpawnObjects(cell.transform, ObjectSpawner.EnvProp.TREE, 0.32f * height, 0.5f * height);
+			spawner.SpawnObjects(cell.transform, ObjectSpawner.EnvProp.ROCK, 0.32f * height, 0.64f * height);
 
 			cell.SetActive(false);
 		}
 
 		UpdateActiveChunks();
-
-		//CreateMeshShapes(0, 0);
-		//UpdateMeshes(0, 0);
 
 		RenderSettings.fog = (player != null);
 
@@ -160,25 +131,13 @@ public class MeshTerrainGenerator : MonoBehaviour {
 		vertices = new Vector3[(meshSize + 1) * (meshSize + 1)];
 		colours = new Color[vertices.Length];
 
+		// Uses the perlin noise to create points on mesh 
 		int vertexIndex = 0;
-		float colourOffset;
 		for (int z = 0; z <= meshSize; z++) {
 			for (int x = 0; x <= meshSize; x++) {
 				vertices[vertexIndex] = new Vector3(x, noiseMap[x, z] * height, z);
 
-				colourOffset = Random.Range(-0.01f, 0.01f);
-
-				// Dependent on how tall the mesh is in the y-axis, different colours are applied
-				//if (noiseMap[x, z] > 0.7f) {
-				//	colours[vertexIndex] = new Color(snowColour.r + colourOffset, //snowColour.g + colourOffset, snowColour.b + colourOffset);
-				//} else if (noiseMap[x, z] >= 0.5f) {
-				//	colours[vertexIndex] = new Color(rockColour.r + colourOffset, //rockColour.g + colourOffset, rockColour.b + colourOffset);
-				//} else if (noiseMap[x, z] > 0.3f) {
-				//	colours[vertexIndex] = new Color(grassColour.r, grassColour.g + //colourOffset, grassColour.b);
-				//} else {
-				//	colours[vertexIndex] = new Color(seaColour.r, seaColour.g, //seaColour.b + colourOffset);
-				//}
-
+				//sets up which colour to use where gradient time is the y-axis
 				colours[vertexIndex] = colourGradient.Evaluate(noiseMap[x, z]);
 
 				vertexIndex++;
@@ -224,15 +183,8 @@ public class MeshTerrainGenerator : MonoBehaviour {
 		Mesh currentMesh = filter.mesh;
 		currentMesh.Clear();
 
-		//Vector2[] uvs = new Vector2[vertices.Length];
-		//
-		//for (int i = 0; i < vertices.Length; i++) {
-		//	uvs[i] = new Vector2(vertices[i].x, vertices[i].z);
-		//}
-
 		currentMesh.vertices = vertices;
 		currentMesh.triangles = triangles;
-		//currentMesh.uv = uvs;
 		currentMesh.colors = colours;
 
 		currentMeshColl.sharedMesh = currentMesh;
@@ -242,37 +194,41 @@ public class MeshTerrainGenerator : MonoBehaviour {
 		currentMesh.RecalculateTangents();
 	}
 
+	#region Chunk System
+
 	/// <summary>
 	/// Sets all meshes as inactive
 	/// </summary>
 	private void UpdateInactiveChunks() {
-		grid[currentX + gridSize, currentZ + gridSize - 1].gameObject.SetActive(false);
-		grid[currentX + gridSize, currentZ + gridSize].gameObject.SetActive(false);
-		grid[currentX + gridSize, currentZ + gridSize + 1].gameObject.SetActive(false);
+		grid[currentX + gridSize, currentZ + gridSize - 1].SetActive(false);
+		grid[currentX + gridSize, currentZ + gridSize].SetActive(false);
+		grid[currentX + gridSize, currentZ + gridSize + 1].SetActive(false);
 
-		grid[currentX + gridSize - 1, currentZ + gridSize - 1].gameObject.SetActive(false);
-		grid[currentX + gridSize - 1, currentZ + gridSize].gameObject.SetActive(false);
-		grid[currentX + gridSize - 1, currentZ + gridSize + 1].gameObject.SetActive(false);
+		grid[currentX + gridSize - 1, currentZ + gridSize - 1].SetActive(false);
+		grid[currentX + gridSize - 1, currentZ + gridSize].SetActive(false);
+		grid[currentX + gridSize - 1, currentZ + gridSize + 1].SetActive(false);
 
-		grid[currentX + gridSize + 1, currentZ + gridSize - 1].gameObject.SetActive(false);
-		grid[currentX + gridSize + 1, currentZ + gridSize].gameObject.SetActive(false);
-		grid[currentX + gridSize + 1, currentZ + gridSize + 1].gameObject.SetActive(false);
+		grid[currentX + gridSize + 1, currentZ + gridSize - 1].SetActive(false);
+		grid[currentX + gridSize + 1, currentZ + gridSize].SetActive(false);
+		grid[currentX + gridSize + 1, currentZ + gridSize + 1].SetActive(false);
 	}
 
 	/// <summary>
 	/// Sets all meshes in a 3x3 grid around player as active
 	/// </summary>
 	private void UpdateActiveChunks() {
-		grid[currentX + gridSize, currentZ + gridSize - 1].gameObject.SetActive(true);
-		grid[currentX + gridSize, currentZ + gridSize].gameObject.SetActive(true);
-		grid[currentX + gridSize, currentZ + gridSize + 1].gameObject.SetActive(true);
+		grid[currentX + gridSize, currentZ + gridSize - 1].SetActive(true);
+		grid[currentX + gridSize, currentZ + gridSize].SetActive(true);
+		grid[currentX + gridSize, currentZ + gridSize + 1].SetActive(true);
 
-		grid[currentX + gridSize - 1, currentZ + gridSize - 1].gameObject.SetActive(true);
-		grid[currentX + gridSize - 1, currentZ + gridSize].gameObject.SetActive(true);
-		grid[currentX + gridSize - 1, currentZ + gridSize + 1].gameObject.SetActive(true);
+		grid[currentX + gridSize - 1, currentZ + gridSize - 1].SetActive(true);
+		grid[currentX + gridSize - 1, currentZ + gridSize].SetActive(true);
+		grid[currentX + gridSize - 1, currentZ + gridSize + 1].SetActive(true);
 
-		grid[currentX + gridSize + 1, currentZ + gridSize - 1].gameObject.SetActive(true);
-		grid[currentX + gridSize + 1, currentZ + gridSize].gameObject.SetActive(true);
-		grid[currentX + gridSize + 1, currentZ + gridSize + 1].gameObject.SetActive(true);
+		grid[currentX + gridSize + 1, currentZ + gridSize - 1].SetActive(true);
+		grid[currentX + gridSize + 1, currentZ + gridSize].SetActive(true);
+		grid[currentX + gridSize + 1, currentZ + gridSize + 1].SetActive(true);
 	}
+
+	#endregion Chunk System
 }

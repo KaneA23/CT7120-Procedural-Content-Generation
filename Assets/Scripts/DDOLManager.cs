@@ -12,9 +12,11 @@ public class DDOLManager : MonoBehaviour {
 
 	// Terrain colour variables
 	private Color snowColour;
-	private Color stoneColour;  // Dark Grey
-	private Color grassColour;  // Dark Green
-	private Color seaColour;    // Blue
+	private Color rockColour;
+	private Color grassColour;
+	private Color seaColour;
+
+	#region Getter Setters
 
 	public string Seed {
 		get {
@@ -43,12 +45,12 @@ public class DDOLManager : MonoBehaviour {
 		}
 	}
 
-	public Color StoneColour {
+	public Color RockColour {
 		get {
-			return stoneColour;
+			return rockColour;
 		}
 		set {
-			stoneColour = value;
+			rockColour = value;
 		}
 	}
 
@@ -69,6 +71,8 @@ public class DDOLManager : MonoBehaviour {
 			seaColour = value;
 		}
 	}
+
+	#endregion Getter Setters
 
 	private void Awake() {
 		if (instance != null) {
