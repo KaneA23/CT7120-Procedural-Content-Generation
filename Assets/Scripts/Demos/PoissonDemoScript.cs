@@ -40,7 +40,7 @@ public class PoissonDemoScript : MonoBehaviour {
 
 		usePoisson = true;
 
-		StartCoroutine(SpawnObjects());
+		//StartCoroutine(SpawnObjects());
 	}
 
 	public void OnGenerateButtonPressed() {

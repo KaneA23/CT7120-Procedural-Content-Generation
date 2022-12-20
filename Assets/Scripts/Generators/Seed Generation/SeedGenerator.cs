@@ -43,4 +43,11 @@ public class SeedGenerator : MonoBehaviour {
 
 		Random.InitState(seed);
 	}
+
+	/// <summary>
+	/// Before changing seen, removes any predetermined seed
+	/// </summary>
+	private void OnDestroy() {
+		Random.InitState((int)LehmerPRNG.GenerateNumber());
+	}
 }
