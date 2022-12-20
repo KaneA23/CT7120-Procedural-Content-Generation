@@ -18,9 +18,11 @@ public static class PerlinNoiseGenerator {
 	/// <param name="a_chunkZ"></param>
 	/// <returns></returns>
 	public static float[,] GenerateNoise(int a_octaves, float a_persistance, float a_lacunarity, int a_meshSize, float a_scale, Vector2 a_offsets, float a_chunkX = 0, float a_chunkZ = 0) {
-		
+
 		float[,] noiseMap = new float[a_meshSize + 1, a_meshSize + 1];
-		
+
+		float minTerrainHeight = 0;
+
 		float xCoord;
 		float zCoord;
 		for (int z = 0; z <= a_meshSize; z++) {
@@ -44,7 +46,14 @@ public static class PerlinNoiseGenerator {
 					frequency *= a_lacunarity;
 				}
 
-				noiseHeight = Mathf.InverseLerp(0.0f, totalAmplitude, noiseHeight);
+				if (noiseHeight > totalAmplitude) {
+					totalAmplitude = noiseHeight;
+				}
+				if (noiseHeight < minTerrainHeight) {
+					minTerrainHeight = noiseHeight;
+				}
+
+				noiseHeight = Mathf.InverseLerp(minTerrainHeight, totalAmplitude, noiseHeight);
 
 				noiseMap[x, z] = noiseHeight;
 			}

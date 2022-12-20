@@ -29,10 +29,10 @@ public class MainMenuManager : MonoBehaviour {
 	public void OnAutoPlayPressed() {
 		DDOL.IsRandomSeed = true;
 
-		DDOL.SnowColour = new Color(0.85f, 0.85f, 0.85f);   // White
-		DDOL.StoneColour = new Color(0.35f, 0.35f, 0.35f);  // Dark Grey
-		DDOL.GrassColour = new Color(0, 0.3f, 0.1f);        // Dark Green
-		DDOL.SeaColour = new Color(0, 0, 0.4f);             // Blue
+		DDOL.SnowColour = Color.white;   // White
+		DDOL.StoneColour = new Color(0.25f, 0.25f, 0.25f);  // Dark Grey
+		DDOL.GrassColour = new Color(0, 0.3f, 0);        // Dark Green
+		DDOL.SeaColour = new Color(0, 0, 0.64f);             // Blue
 	}
 
 	/// <summary>

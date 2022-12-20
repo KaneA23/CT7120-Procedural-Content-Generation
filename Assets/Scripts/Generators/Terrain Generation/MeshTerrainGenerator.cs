@@ -25,6 +25,7 @@ public class MeshTerrainGenerator : MonoBehaviour {
 	private Color seaColour;
 
 	private Color[] colours;
+	private Gradient colourGradient;
 
 	[SerializeField] private MeshFilter chunkPrefab;
 
@@ -65,6 +66,26 @@ public class MeshTerrainGenerator : MonoBehaviour {
 		rockColour = DDOL.StoneColour;
 		grassColour = DDOL.GrassColour;
 		seaColour = DDOL.SeaColour;
+
+
+		colourGradient = new Gradient();
+
+		GradientColorKey[] colourKey = new GradientColorKey[4];
+
+		colourKey[0].color = seaColour;
+		colourKey[0].time = 0f;
+		colourKey[1].color = grassColour;
+		colourKey[1].time = 0.35f;
+		colourKey[2].color = rockColour;
+		colourKey[2].time = 0.6f;
+		colourKey[3].color = snowColour;
+		colourKey[3].time = 0.8f;
+
+		GradientAlphaKey[] alphaKey = new GradientAlphaKey[1];
+		alphaKey[0].alpha = 1f;
+		alphaKey[0].time = 0f;
+
+		colourGradient.SetKeys(colourKey, alphaKey);
 
 		// Generates meshes in 20x20 grid
 		for (int z = -10; z <= 10; z++) {
@@ -148,15 +169,17 @@ public class MeshTerrainGenerator : MonoBehaviour {
 				colourOffset = Random.Range(-0.01f, 0.01f);
 
 				// Dependent on how tall the mesh is in the y-axis, different colours are applied
-				if (noiseMap[x, z] > 0.7f) {
-					colours[vertexIndex] = new Color(snowColour.r + colourOffset, snowColour.g + colourOffset, snowColour.b + colourOffset);
-				} else if (noiseMap[x, z] >= 0.5f) {
-					colours[vertexIndex] = new Color(rockColour.r + colourOffset, rockColour.g + colourOffset, rockColour.b + colourOffset);
-				} else if (noiseMap[x, z] > 0.3f) {
-					colours[vertexIndex] = new Color(grassColour.r, grassColour.g + colourOffset, grassColour.b);
-				} else {
-					colours[vertexIndex] = new Color(seaColour.r, seaColour.g, seaColour.b + colourOffset);
-				}
+				//if (noiseMap[x, z] > 0.7f) {
+				//	colours[vertexIndex] = new Color(snowColour.r + colourOffset, //snowColour.g + colourOffset, snowColour.b + colourOffset);
+				//} else if (noiseMap[x, z] >= 0.5f) {
+				//	colours[vertexIndex] = new Color(rockColour.r + colourOffset, //rockColour.g + colourOffset, rockColour.b + colourOffset);
+				//} else if (noiseMap[x, z] > 0.3f) {
+				//	colours[vertexIndex] = new Color(grassColour.r, grassColour.g + //colourOffset, grassColour.b);
+				//} else {
+				//	colours[vertexIndex] = new Color(seaColour.r, seaColour.g, //seaColour.b + colourOffset);
+				//}
+
+				colours[vertexIndex] = colourGradient.Evaluate(noiseMap[x, z]);
 
 				vertexIndex++;
 			}

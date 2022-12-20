@@ -108,6 +108,7 @@ public class TerrainCustomiser : MonoBehaviour {
 	/// </summary>
 	public void OnRedSnowChange() {
 		TDS.SnowColour = new Color(snowR.value, TDS.SnowColour.g, TDS.SnowColour.b);
+		TDS.ChangeColourGradient();
 		TDS.CreateMeshShape();
 	}
 
@@ -116,6 +117,7 @@ public class TerrainCustomiser : MonoBehaviour {
 	/// </summary>
 	public void OnGreenSnowChange() {
 		TDS.SnowColour = new Color(TDS.SnowColour.r, snowG.value, TDS.SnowColour.b);
+		TDS.ChangeColourGradient();
 		TDS.CreateMeshShape();
 	}
 
@@ -124,6 +126,7 @@ public class TerrainCustomiser : MonoBehaviour {
 	/// </summary>
 	public void OnBlueSnowChange() {
 		TDS.SnowColour = new Color(TDS.SnowColour.r, TDS.SnowColour.g, snowB.value);
+		TDS.ChangeColourGradient();
 		TDS.CreateMeshShape();
 	}
 
@@ -132,6 +135,7 @@ public class TerrainCustomiser : MonoBehaviour {
 	/// </summary>
 	public void OnRedRockChange() {
 		TDS.RockColour = new Color(stoneR.value, TDS.RockColour.g, TDS.RockColour.b);
+		TDS.ChangeColourGradient();
 		TDS.CreateMeshShape();
 	}
 
@@ -140,6 +144,7 @@ public class TerrainCustomiser : MonoBehaviour {
 	/// </summary>
 	public void OnGreenRockChange() {
 		TDS.RockColour = new Color(TDS.RockColour.r, stoneG.value, TDS.RockColour.b);
+		TDS.ChangeColourGradient();
 		TDS.CreateMeshShape();
 	}
 
@@ -148,6 +153,7 @@ public class TerrainCustomiser : MonoBehaviour {
 	/// </summary>
 	public void OnBlueRockChange() {
 		TDS.RockColour = new Color(TDS.RockColour.r, TDS.RockColour.g, stoneB.value);
+		TDS.ChangeColourGradient();
 		TDS.CreateMeshShape();
 	}
 
@@ -156,6 +162,7 @@ public class TerrainCustomiser : MonoBehaviour {
 	/// </summary>
 	public void OnRedGrassChange() {
 		TDS.GrassColour = new Color(grassR.value, TDS.GrassColour.g, TDS.GrassColour.b);
+		TDS.ChangeColourGradient();
 		TDS.CreateMeshShape();
 	}
 
@@ -164,6 +171,7 @@ public class TerrainCustomiser : MonoBehaviour {
 	/// </summary>
 	public void OnGreenGrassChange() {
 		TDS.GrassColour = new Color(TDS.GrassColour.r, grassG.value, TDS.GrassColour.b);
+		TDS.ChangeColourGradient();
 		TDS.CreateMeshShape();
 	}
 
@@ -172,6 +180,7 @@ public class TerrainCustomiser : MonoBehaviour {
 	/// </summary>
 	public void OnBlueGrassChange() {
 		TDS.GrassColour = new Color(TDS.GrassColour.r, TDS.GrassColour.g, grassB.value);
+		TDS.ChangeColourGradient();
 		TDS.CreateMeshShape();
 	}
 
@@ -180,6 +189,7 @@ public class TerrainCustomiser : MonoBehaviour {
 	/// </summary>
 	public void OnRedSeaChange() {
 		TDS.SeaColour = new Color(seaR.value, TDS.SeaColour.g, TDS.SeaColour.b);
+		TDS.ChangeColourGradient();
 		TDS.CreateMeshShape();
 	}
 
@@ -188,6 +198,7 @@ public class TerrainCustomiser : MonoBehaviour {
 	/// </summary>
 	public void OnGreenSeaChange() {
 		TDS.SeaColour = new Color(TDS.SeaColour.r, seaG.value, TDS.SeaColour.b);
+		TDS.ChangeColourGradient();
 		TDS.CreateMeshShape();
 	}
 
@@ -196,6 +207,7 @@ public class TerrainCustomiser : MonoBehaviour {
 	/// </summary>
 	public void OnBlueSeaChange() {
 		TDS.SeaColour = new Color(TDS.SeaColour.r, TDS.SeaColour.g, seaB.value);
+		TDS.ChangeColourGradient();
 		TDS.CreateMeshShape();
 	}
 }
